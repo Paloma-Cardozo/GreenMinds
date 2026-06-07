@@ -1,0 +1,10 @@
+.link {
+  display: flex;
+  margin: 5vh 0;
+}
+
+.logo,
+.message {
+  width: 100%;
+  margin: 20px auto;
+}
