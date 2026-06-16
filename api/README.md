@@ -33,6 +33,116 @@ Combined, these two techniques make it very easy to experiment with changes to y
 
 It also makes it possible to share temporary schema changes with others during Pull Request testing.
 
+## Setting up a PostgreSQL database locally
+
+This walkthrough shows how to switch from SQLite to PostgreSQL for local development and run the migrations and seeds.
+
+### 1. Install PostgreSQL
+
+Download and install PostgreSQL from [https://www.postgresql.org/download/](https://www.postgresql.org/download/).  
+During installation, note the password you set for the `postgres` superuser and the port (default: `5432`).
+
+### 2. Create a database
+
+Open the **psql** shell (or a GUI tool like [pgAdmin](https://www.pgadmin.org/)) and create a new database:
+
+```sql
+CREATE DATABASE greenminds;
+```
+
+You can also create a dedicated user instead of using `postgres` directly:
+
+```sql
+CREATE USER greenminds_user WITH PASSWORD 'yourpassword';
+GRANT ALL PRIVILEGES ON DATABASE greenminds TO greenminds_user;
+```
+
+### 3. Configure the `.env` file
+
+In the `api/` folder, copy the template and open the file:
+
+```bash
+cp .env-template .env
+```
+
+Update the file so it targets PostgreSQL (comment out the SQLite lines, uncomment the PostgreSQL lines):
+
+```
+PORT=3001
+
+DB_CLIENT=pg
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=greenminds_user
+DB_PASSWORD=yourpassword
+DB_DATABASE_NAME=greenminds
+DB_USE_SSL=false
+```
+
+### 4. Install dependencies
+
+From the `api/` folder, install the npm packages (the `pg` client is already listed as a dependency):
+
+```bash
+npm install
+```
+
+### 5. Run migrations
+
+Migrations create (or update) your database tables. Run the latest migrations with:
+
+```bash
+npm run migrate:latest
+```
+
+This executes every file inside `migrations/` that has not been applied yet, in order:
+
+| Migration file | What it creates |
+|---|---|
+| `20260615213603_create_users_table.js` | `users` table |
+| `20260615213951_create_favorite_plants_table.js` | `favorite_plants` table |
+| `20260615214002_create_user_favorite_plants_table.js` | `user_favorite_plants` table |
+
+To undo the last batch of migrations (roll back), run:
+
+```bash
+npm run migrate:rollback
+```
+
+### 6. Run seeds
+
+Seeds populate the tables with initial data. Run them with:
+
+```bash
+npm run seed
+```
+
+This runs each file in `seeds/` in alphabetical order:
+
+1. `01_users.js` — inserts sample users
+2. `02_favorite_plants.js` — inserts sample plants
+3. `03_users_favorite_plants.js` — links users to their favourite plants
+
+> **Note:** Each seed file deletes all existing rows before inserting, so running `npm run seed` twice is safe and idempotent.
+
+### 7. Verify the setup
+
+Start the API server:
+
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3001/api](http://localhost:3001/api) — a successful response confirms the server has connected to PostgreSQL.  
+You can also open pgAdmin (or `psql`) and query the tables directly:
+
+```sql
+SELECT * FROM users;
+SELECT * FROM favorite_plants;
+```
+
+---
+
 ## Deploying
 
 > Last tested: 2025-07-08
