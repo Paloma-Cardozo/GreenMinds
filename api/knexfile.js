@@ -1,8 +1,9 @@
-import knex from "knex";
+import "dotenv/config";
 
 const isSQLite = process.env.DB_CLIENT === "sqlite3";
 
-const connection = knex({
+/** @type {import('knex').Knex.Config} */
+const config = {
   client: process.env.DB_CLIENT,
   connection: isSQLite
     ? { filename: process.env.DB_SQLITE_FILENAME }
@@ -18,6 +19,9 @@ const connection = knex({
             : false,
       },
   useNullAsDefault: isSQLite,
-});
+  migrations: {
+    directory: "./migrations",
+  },
+};
 
-export default connection;
+export default config;
