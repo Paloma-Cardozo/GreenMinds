@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import knex from "./database_client.js";
+import plantsRouter from "./routers/plants.js";
 import nestedRouter from "./routers/nested.js";
 
 const app = express();
@@ -21,8 +22,9 @@ apiRouter.get("/", async (req, res) => {
 
 // Here is an example of optionally setting up nested routes. Replace it or delete as needed.
 apiRouter.use("/nested", nestedRouter);
-
+apiRouter.use("/plants", plantsRouter);
 app.use("/api", apiRouter);
-app.listen(process.env.PORT, () => {
-  console.log(`API listening on port ${process.env.PORT}`);
+app.listen(process.env.PORT || 3001, () => {
+  const port = process.env.PORT || 3001;
+  console.log(`API listening on port ${port}`);
 });
