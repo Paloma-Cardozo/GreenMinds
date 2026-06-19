@@ -12,7 +12,10 @@
     "dev": "nodemon src/index.mjs",
     "start": "node src/index.mjs",
     "format": "npx prettier . --write",
-    "check": "npx eslint . --fix"
+    "check": "npx eslint . --fix",
+    "migrate:latest": "knex --knexfile knexfile.js migrate:latest",
+    "migrate:rollback": "knex --knexfile knexfile.js migrate:rollback",
+    "seed": "knex --knexfile knexfile.js seed:run"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
