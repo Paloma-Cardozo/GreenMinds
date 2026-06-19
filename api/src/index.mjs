@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import knex from "./database_client.js";
 import nestedRouter from "./routers/nested.js";
+import { authRouter } from "./routers/auth.js";
 
 const app = express();
 app.use(cors());
@@ -21,6 +22,7 @@ apiRouter.get("/", async (req, res) => {
 
 // Here is an example of optionally setting up nested routes. Replace it or delete as needed.
 apiRouter.use("/nested", nestedRouter);
+apiRouter.use("/auth", authRouter);
 
 app.use("/api", apiRouter);
 app.listen(process.env.PORT, () => {
