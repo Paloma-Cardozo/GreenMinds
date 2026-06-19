@@ -1,5 +1,5 @@
 import express from "express";
-//import auth from "../../middleware/auth.js";
+import { auth } from "../../middleware/auth.js";
 import connection from "../database_client.js";
 const router = express.Router();
 
@@ -21,7 +21,7 @@ async function getPlantBookToken() {
 
 router.get(
   "/favourites",
-  /*auth,*/ async (req, res) => {
+  auth, async (req, res) => {
     try {
       const userId = req.user.id;
       const favourites = await connection("user_favorite_plants as ufp")
@@ -46,7 +46,7 @@ router.get(
 
 router.post(
   "/favourites",
-  /*auth,*/ async (req, res) => {
+  auth, async (req, res) => {
     try {
       const userId = req.user.id;
       const { pid, alias } = req.body;
@@ -130,7 +130,7 @@ router.post(
 //Delete favourite
 router.delete(
   "/favourites/:id",
-  /*auth,*/ async (req, res) => {
+  auth, async (req, res) => {
     try {
       const userId = req.user.id;
       const favouriteId = req.params.id;
