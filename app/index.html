@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GreenMinds</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h2>🌿 GreenMinds</h2>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#about">About</a>
+            <a href="#search">Search Plant</a>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Grow Smarter, Not Harder 🌱</h1>
+            <p>
+                  Because every plant deserves the right care. GreenMinds helps you nurture 
+    your plants with the perfect balance of water, sunlight, and attention.
+            </p>
+            <a href="#search" class="btn">Get Started</a>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="about">
+        <h2>Why GreenMinds?</h2>
+
+        <div class="cards">
+            <div class="card">
+                <h3>💧 Smart Watering</h3>
+                <p>Know exactly when and how much to water your plant.</p>
+            </div>
+
+            <div class="card">
+                <h3>☀️ Sunlight Guide</h3>
+                <p>Understand perfect lighting conditions for growth.</p>
+            </div>
+
+            <div class="card">
+                <h3>🌿 Plant Health</h3>
+                <p>Get alerts and solutions when your plant struggles.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEARCH SECTION -->
+    <section id="search" class="search-section">
+        <h2>🌱 Let's Take Care of Your Plant</h2>
+        <p>Select your plant to begin</p>
+
+        <select id="plantSelect">
+            <option value="">-- Search Your Plant --</option>
+            <option value="Rose">Rose</option>
+            <option value="Tulip">Tulip</option>
+            <option value="Sunflower">Sunflower</option>
+            <option value="Lavender">Lavender</option>
+            <option value="Orchid">Orchid</option>
+            <option value="Aloe Vera">Aloe Vera</option>
+            <option value="Bamboo">Bamboo</option>
+            <option value="Cactus">Cactus</option>
+            <option value="Fern">Fern</option>
+            <option value="Mint">Mint</option>
+        </select>
+
+        <button onclick="selectPlant()">Continue</button>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
