@@ -6,6 +6,7 @@ import knex from "./database_client.js";
 import plantsRouter from "./routers/plants.js";
 import nestedRouter from "./routers/nested.js";
 import { authRouter } from "./routers/auth.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 app.use(cors());
@@ -27,6 +28,8 @@ apiRouter.use("/auth", authRouter);
 apiRouter.use("/plants", plantsRouter);
 
 app.use("/api", apiRouter);
+app.use(errorHandler);
+
 app.listen(process.env.PORT || 3001, () => {
   const port = process.env.PORT || 3001;
   console.log(`API listening on port ${port}`);

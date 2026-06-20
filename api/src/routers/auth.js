@@ -5,7 +5,7 @@ import db from "../database_client.js";
 
 const authRouter = Router();
 
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/signup", async (req, res, next) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -53,12 +53,11 @@ authRouter.post("/signup", async (req, res) => {
 
     res.status(201).json(user);
   } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ error: "Server error during signup" });
+    next(error);
   }
 });
 
-authRouter.post("/login", async (req, res) => {
+authRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -93,8 +92,7 @@ authRouter.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ error: "Server error during login" });
+    next(error);
   }
 });
 
