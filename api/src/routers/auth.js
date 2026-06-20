@@ -25,10 +25,16 @@ authRouter.post("/signup", async (req, res) => {
   }
 
   try {
-    const existingUser = await db("users").where({ email }).first();
+    const existingEmail = await db("users").where({ email }).first();
 
-    if (existingUser) {
+    if (existingEmail) {
       return res.status(400).json({ error: "Email already in use" });
+    }
+
+    const existingUsername = await db("users").where({ username }).first();
+
+    if (existingUsername) {
+      return res.status(400).json({ error: "Username already in use" });
     }
 
     const password_hash = await bcrypt.hash(password, 10);
