@@ -7,6 +7,7 @@ import plantsRouter from "./routers/plants.js";
 import nestedRouter from "./routers/nested.js";
 import { authRouter } from "./routers/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { notFoundHandler } from "./middleware/notFoundHandler.js";
 
 const app = express();
 app.use(cors());
@@ -28,6 +29,7 @@ apiRouter.use("/auth", authRouter);
 apiRouter.use("/plants", plantsRouter);
 
 app.use("/api", apiRouter);
+app.use(notFoundHandler);
 app.use(errorHandler);
 
 app.listen(process.env.PORT || 3001, () => {
