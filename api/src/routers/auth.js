@@ -6,6 +6,38 @@ import db from "../database_client.js";
 const authRouter = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * @swagger
+ * /auth/signup:
+ *   post:
+ *     summary: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: testuser1
+ *               email:
+ *                 type: string
+ *                 example: test1@test.com
+ *               password:
+ *                 type: string
+ *                 example: "12345678"
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Validation error, or email/username already in use
+ */
+
 authRouter.post("/signup", async (req, res, next) => {
   const { username, email, password } = req.body;
 
@@ -57,6 +89,36 @@ authRouter.post("/signup", async (req, res, next) => {
     next(error);
   }
 });
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Log in an existing user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test1@test.com
+ *               password:
+ *                 type: string
+ *                 example: "12345678"
+ *     responses:
+ *       200:
+ *         description: Login successful, returns a JWT token and basic user info
+ *       400:
+ *         description: Missing email or password
+ *       401:
+ *         description: Email or password incorrect
+ */
 
 authRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;

@@ -8,6 +8,8 @@ import nestedRouter from "./routers/nested.js";
 import { authRouter } from "./routers/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.js";
 
 if (!process.env.JWT_SECRET) {
   console.error("Missing required environment variable: JWT_SECRET");
@@ -17,6 +19,7 @@ if (!process.env.JWT_SECRET) {
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const apiRouter = express.Router();
 
