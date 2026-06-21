@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import db from "../database_client.js";
 
 const authRouter = Router();
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 authRouter.post("/signup", async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -14,7 +15,7 @@ authRouter.post("/signup", async (req, res, next) => {
       .json({ error: "Username, email, and password are required" });
   }
 
-  if (!email.includes("@")) {
+  if (!emailPattern.test(email)) {
     return res.status(400).json({ error: "Email must be valid" });
   }
 
