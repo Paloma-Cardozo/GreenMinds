@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../middleware/auth.js";
+import auth from "/../middleware/auth.js";
 import connection from "../database_client.js";
 const router = express.Router();
 
@@ -19,13 +19,13 @@ async function getPlantBookToken() {
   return data.access_token;
 }
 
-router.get("/favourites", auth, async (req, res) => {
+router.get("/favorites", auth, async (req, res) => {
   try {
     const userId = req.user.id;
-    const favourites = await connection("user_favorite_plants as ufp")
+    const favorites = await connection("users_favorite_plants as ufp")
       .join("favorite_plants as fp", "fp.id", "ufp.plant_id")
       .select(
-        "ufp.id as favourite_id",
+        "ufp.id as favorite_id",
         "fp.pid",
         "fp.alias",
         "fp.img_url",
@@ -34,14 +34,14 @@ router.get("/favourites", auth, async (req, res) => {
       .where("ufp.user_id", userId)
       .orderBy("ufp.saved_at", "DESC");
 
-    res.json(favourites);
+    res.json(favorites);
   } catch (error) {
-    console.error("Error fetching favourites:", error);
+    console.error("Error fetching favorites:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-router.post("/favourites", auth, async (req, res) => {
+router.post("/favorites", auth, async (req, res) => {
   try {
     const userId = req.user.id;
     const { pid, alias } = req.body;
@@ -96,47 +96,47 @@ router.post("/favourites", auth, async (req, res) => {
       plantId = existingPlant.id;
     }
 
-    //prevent duplicate favourites for same user
-    const existingFav = await connection("user_favorite_plants")
+    //prevent duplicate favorites for same user
+    const existingFav = await connection("users_favorite_plants")
       .where({ user_id: userId, plant_id: plantId })
       .first();
     if (existingFav) {
-      return res.status(400).json({ error: "plant already in favourites" });
+      return res.status(400).json({ error: "plant already in favorites" });
     }
-    //Insert into join table user_favorite_plants
-    const result = await connection("user_favorite_plants")
+    //Insert into join table users_favorite_plants
+    const result = await connection("users_favorite_plants")
       .insert({
         user_id: userId,
         plant_id: plantId,
       })
       .returning("*");
-    const favourite = Array.isArray(result) ? result[0] : result;
+    const favorite = Array.isArray(result) ? result[0] : result;
     res.status(201).json({
-      message: "plant added to favourities",
-      favourite,
+      message: "plant added to favorites",
+      favorite,
     });
   } catch (error) {
-    console.error("Error adding favourite:", error);
+    console.error("Error adding favorite:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-//Delete favourite
-router.delete("/favourites/:id", auth, async (req, res) => {
+//Delete favorite
+router.delete("/favorites/:id", auth, async (req, res) => {
   try {
     const userId = req.user.id;
-    const favouriteId = req.params.id;
-    const fav = await connection("user_favorite_plants")
-      .where({ id: favouriteId, user_id: userId })
+    const favoriteId = req.params.id;
+    const fav = await connection("users_favorite_plants")
+      .where({ id: favoriteId, user_id: userId })
       .first();
     if (!fav) {
-      return res.status(404).json({ error: "Favourite not found" });
+      return res.status(404).json({ error: "Favorite not found" });
     }
 
-    await connection("user_favorite_plants").where({ id: favouriteId }).del();
-    res.json({ message: "Favourite deleted successfully" });
+    await connection("users_favorite_plants").where({ id: favoriteId }).del();
+    res.json({ message: "Favorite deleted successfully" });
   } catch (error) {
-    console.error("Error deleting favourite:", error);
+    console.error("Error deleting favorite:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
