@@ -47,6 +47,16 @@ authRouter.post("/signup", async (req, res, next) => {
       .json({ error: "Username, email, and password are required" });
   }
 
+  if (
+    typeof username !== "string" ||
+    typeof email !== "string" ||
+    typeof password !== "string"
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Username, email, and password must be text" });
+  }
+
   if (!emailPattern.test(email)) {
     return res.status(400).json({ error: "Email must be valid" });
   }
