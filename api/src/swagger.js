@@ -1,5 +1,21 @@
 import swaggerJSDoc from "swagger-jsdoc";
 
+const servers = [
+  {
+    url: "http://localhost:3001/api",
+    description: "Local development server",
+  },
+];
+
+if (process.env.API_URL) {
+  const productionServer = {
+    url: process.env.API_URL,
+    description: "Production server",
+  };
+
+  servers.push(productionServer);
+}
+
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -9,12 +25,7 @@ const options = {
       description:
         "API for tracking and managing favorite plants, built as a HackYourFuture final project.",
     },
-    servers: [
-      {
-        url: "http://localhost:3001/api",
-        description: "Local development server",
-      },
-    ],
+    servers: servers,
   },
   apis: ["./src/routers/*.js"],
 };
