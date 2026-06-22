@@ -19,7 +19,7 @@ async function getPlantBookToken() {
   return data.access_token;
 }
 
-router.get("/favorites", auth, async (req, res) => {
+router.get("/favorites", auth, async (req, res, next) => {
   try {
     const userId = req.user.id;
     const favorites = await connection("users_favorite_plants as ufp")
@@ -36,12 +36,11 @@ router.get("/favorites", auth, async (req, res) => {
 
     res.json(favorites);
   } catch (error) {
-    console.error("Error fetching favorites:", error);
-    res.status(500).json({ error: "Server error" });
+    next(error);
   }
 });
 
-router.post("/favorites", auth, async (req, res) => {
+router.post("/favorites", auth, async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { pid, alias } = req.body;
@@ -116,13 +115,12 @@ router.post("/favorites", auth, async (req, res) => {
       favorite,
     });
   } catch (error) {
-    console.error("Error adding favorite:", error);
-    res.status(500).json({ error: "Server error" });
+    next(error);
   }
 });
 
 //Delete favorite
-router.delete("/favorites/:id", auth, async (req, res) => {
+router.delete("/favorites/:id", auth, async (req, res, next) => {
   try {
     const userId = req.user.id;
     const favoriteId = req.params.id;
@@ -136,8 +134,7 @@ router.delete("/favorites/:id", auth, async (req, res) => {
     await connection("users_favorite_plants").where({ id: favoriteId }).del();
     res.json({ message: "Favorite deleted successfully" });
   } catch (error) {
-    console.error("Error deleting favorite:", error);
-    res.status(500).json({ error: "Server error" });
+    next(error);
   }
 });
 
