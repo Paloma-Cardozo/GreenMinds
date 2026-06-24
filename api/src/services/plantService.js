@@ -6,17 +6,26 @@ export async function getPlantBookToken(apiUrl, clientId, clientSecret) {
     error.status = 400;
     throw error;
   }
-  const response = await fetch(`${apiUrl}/token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      grant_type: "client_credentials",
-      client_id: clientId,
-      client_secret: clientSecret,
-    }),
+  const params = new URLSearchParams({
+    grant_type: "client_credentials",
+    client_id: clientId,
+    client_secret: clientSecret,
   });
+
+  const normalizedApiUrl = apiUrl.replace(/\/+$/, "");
+  const tokenUrl = `${normalizedApiUrl}/token/`;
+
+  const response = await fetch(tokenUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params,
+  });
+
   if (!response.ok) {
-    const error = new Error(`Token request failed:${response.statusText}`);
+    const responseBody = await response.text();
+    const error = new Error(
+      `Token request failed: ${response.status} ${response.statusText}${responseBody ? ` - ${responseBody}` : ""}`,
+    );
     error.status = response.status;
     throw error;
   }
@@ -24,8 +33,11 @@ export async function getPlantBookToken(apiUrl, clientId, clientSecret) {
   return data.access_token;
 }
 
-export async function fetchPlantDetails(apiUrl, pid, token) {
-  const response = await fetch(`${apiUrl}/plant/detail/${pid}`, {
+export async function fetchPlantDetails(apiUrl, pid, token, query = {}) {
+  const queryString = new URLSearchParams(query).toString();
+  const detailUrl = `${apiUrl}/plant/detail/${encodeURIComponent(pid)}${queryString ? `/?${queryString}` : ""}`;
+
+  const response = await fetch(detailUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
