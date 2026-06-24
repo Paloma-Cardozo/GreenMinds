@@ -1,28 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Login - GreenMinds</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="overlay-card">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="overlay-card">
+      <h2>Login</h2>
 
-    <h2>Login</h2>
+      <p id="selectedPlant"></p>
 
-    <p id="selectedPlant"></p>
-
-    <form onsubmit="handleLogin(event)">
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
+      <form onsubmit="handleLogin(event)">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
 
         <button type="submit">Login</button>
-    </form>
+      </form>
 
-    <p id="message"></p>
+      <p id="message"></p>
+    </div>
 
-</div>
-    
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
