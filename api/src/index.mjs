@@ -10,7 +10,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger.js";
-
+import usersRouter from "./routers/users.js";
 if (!process.env.JWT_SECRET) {
   console.error("Missing required environment variable: JWT_SECRET");
   process.exit(1);
@@ -35,7 +35,7 @@ apiRouter.get("/", async (req, res) => {
 apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/plants", plantsRouter);
-
+apiRouter.use("/users", usersRouter);
 app.use("/api", apiRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
