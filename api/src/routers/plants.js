@@ -11,6 +11,46 @@ import {
 const router = express.Router();
 
 const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
+/**
+ * @swagger
+ * tags:
+ *   name: Favorites
+ *   description: Manage user favorite plants
+ */
+
+/**
+ * @swagger
+ * /favorites:
+ *   get:
+ *     summary: Get all favorite plants for the authenticated user
+ *     tags: [Favorites]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of favorite plants
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   favorite_id:
+ *                     type: integer
+ *                   pid:
+ *                     type: string
+ *                   alias:
+ *                     type: string
+ *                   img_url:
+ *                     type: string
+ *                     nullable: true
+ *                   saved_at:
+ *                     type: string
+ *                     format: date-time
+ *       401:
+ *         description: Unauthorized
+ */
 
 router.get("/favorites", auth, async (req, res, next) => {
   try {
@@ -32,6 +72,48 @@ router.get("/favorites", auth, async (req, res, next) => {
     next(error);
   }
 });
+/**
+ * @swagger
+ * /favorites:
+ *   post:
+ *     summary: Add a plant to the user's favorites
+ *     tags: [Favorites]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - pid
+ *             properties:
+ *               pid:
+ *                 type: string
+ *                 description: PlantBook plant ID
+ *               alias:
+ *                 type: string
+ *                 description: Optional custom name for the plant
+ *     responses:
+ *       201:
+ *         description: Plant added to favorites
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 favorite:
+ *                   type: object
+ *       400:
+ *         description: Missing pid or plant already favorited
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Plant not found in PlantBook API
+ */
 
 router.post("/favorites", auth, async (req, res, next) => {
   try {
@@ -63,6 +145,37 @@ router.post("/favorites", auth, async (req, res, next) => {
     next(error);
   }
 });
+
+/**
+ * @swagger
+ * /favorites/{id}:
+ *   delete:
+ *     summary: Remove a plant from the user's favorites
+ *     tags: [Favorites]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Favorite record ID
+ *     responses:
+ *       200:
+ *         description: Favorite deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Favorite not found
+ *       401:
+ *         description: Unauthorized
+ */
 
 //Delete favorite
 router.delete("/favorites/:id", auth, async (req, res, next) => {
