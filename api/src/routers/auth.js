@@ -2,6 +2,7 @@ import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../database_client.js";
+import { loginLimiter } from "../middleware/loginLimiter.js";
 
 const authRouter = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -134,7 +135,7 @@ authRouter.post("/signup", async (req, res, next) => {
  *         description: Email or password incorrect
  */
 
-authRouter.post("/login", async (req, res, next) => {
+authRouter.post("/login", loginLimiter, async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
