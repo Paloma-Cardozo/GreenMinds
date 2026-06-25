@@ -2,6 +2,7 @@ import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../database_client.js";
+import { loginLimiter } from "../middleware/loginLimiter.js";
 
 const authRouter = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,7 +48,19 @@ authRouter.post("/signup", async (req, res, next) => {
       .json({ error: "Username, email, and password are required" });
   }
 
-  if (!emailPattern.test(email)) {
+  if (
+    typeof username !== "string" ||
+    typeof email !== "string" ||
+    typeof password !== "string"
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Username, email, and password must be text" });
+  }
+
+  const normalizedEmail = email.toLowerCase();
+
+  if (!emailPattern.test(normalizedEmail)) {
     return res.status(400).json({ error: "Email must be valid" });
   }
 
@@ -58,7 +71,9 @@ authRouter.post("/signup", async (req, res, next) => {
   }
 
   try {
-    const existingEmail = await db("users").where({ email }).first();
+    const existingEmail = await db("users")
+      .where({ email: normalizedEmail })
+      .first();
 
     if (existingEmail) {
       return res.status(400).json({ error: "Email already in use" });
@@ -73,7 +88,7 @@ authRouter.post("/signup", async (req, res, next) => {
     const password_hash = await bcrypt.hash(password, 10);
 
     const newUser = await db("users")
-      .insert({ username, email, password_hash })
+      .insert({ username, email: normalizedEmail, password_hash })
       .returning(["id", "username", "email", "created_at"]);
 
     let user;
@@ -120,15 +135,21 @@ authRouter.post("/signup", async (req, res, next) => {
  *         description: Email or password incorrect
  */
 
-authRouter.post("/login", async (req, res, next) => {
+authRouter.post("/login", loginLimiter, async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
+  if (typeof email !== "string" || typeof password !== "string") {
+    return res.status(400).json({ error: "Email and password must be text" });
+  }
+
+  const normalizedEmail = email.toLowerCase();
+
   try {
-    const user = await db("users").where({ email }).first();
+    const user = await db("users").where({ email: normalizedEmail }).first();
 
     if (!user) {
       return res.status(401).json({ error: "Email or password incorrect" });

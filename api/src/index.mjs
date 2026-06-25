@@ -17,6 +17,7 @@ if (!process.env.JWT_SECRET) {
 }
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
