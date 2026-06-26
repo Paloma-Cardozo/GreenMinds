@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../database_client.js";
 import { loginLimiter } from "../middleware/loginLimiter.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
 
 const authRouter = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,38 +40,39 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  *         description: Validation error, or email/username already in use
  */
 
-authRouter.post("/signup", async (req, res, next) => {
-  const { username, email, password } = req.body;
+authRouter.post(
+  "/signup",
+  asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body;
 
-  if (!username || !email || !password) {
-    return res
-      .status(400)
-      .json({ error: "Username, email, and password are required" });
-  }
+    if (!username || !email || !password) {
+      return res
+        .status(400)
+        .json({ error: "Username, email, and password are required" });
+    }
 
-  if (
-    typeof username !== "string" ||
-    typeof email !== "string" ||
-    typeof password !== "string"
-  ) {
-    return res
-      .status(400)
-      .json({ error: "Username, email, and password must be text" });
-  }
+    if (
+      typeof username !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Username, email, and password must be text" });
+    }
 
-  const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.toLowerCase();
 
-  if (!emailPattern.test(normalizedEmail)) {
-    return res.status(400).json({ error: "Email must be valid" });
-  }
+    if (!emailPattern.test(normalizedEmail)) {
+      return res.status(400).json({ error: "Email must be valid" });
+    }
 
-  if (password.length < 8) {
-    return res
-      .status(400)
-      .json({ error: "Password must be at least 8 characters" });
-  }
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters" });
+    }
 
-  try {
     const existingEmail = await db("users")
       .where({ email: normalizedEmail })
       .first();
@@ -100,10 +102,8 @@ authRouter.post("/signup", async (req, res, next) => {
     }
 
     res.status(201).json(user);
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 /**
  * @swagger
@@ -135,20 +135,22 @@ authRouter.post("/signup", async (req, res, next) => {
  *         description: Email or password incorrect
  */
 
-authRouter.post("/login", loginLimiter, async (req, res, next) => {
-  const { email, password } = req.body;
+authRouter.post(
+  "/login",
+  loginLimiter,
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password are required" });
-  }
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
 
-  if (typeof email !== "string" || typeof password !== "string") {
-    return res.status(400).json({ error: "Email and password must be text" });
-  }
+    if (typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({ error: "Email and password must be text" });
+    }
 
-  const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.toLowerCase();
 
-  try {
     const user = await db("users").where({ email: normalizedEmail }).first();
 
     if (!user) {
@@ -175,9 +177,7 @@ authRouter.post("/login", loginLimiter, async (req, res, next) => {
         email: user.email,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 export { authRouter };
