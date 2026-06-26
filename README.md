@@ -133,6 +133,20 @@ All endpoints require `Authorization: Bearer <token>` header.
   ```
 - **DELETE** `/api/plants/favorites/:id` — Remove a favorite plant
 
+### User Profile
+
+All endpoints require `Authorization: Bearer <token>` header, and act on the currently logged-in user (there's no way to view or edit another user's profile).
+
+- **GET** `/api/users/me` — Get the logged-in user's profile (`id`, `username`, `email`, `created_at`)
+- **PUT** `/api/users/me` — Update the logged-in user's `username` and/or `email`
+  ```json
+  {
+    "username": "new_username",
+    "email": "new_email@example.com"
+  }
+  ```
+- **DELETE** `/api/users/me` — Permanently delete the logged-in user's account
+
 ---
 
 ## API Documentation
@@ -155,22 +169,36 @@ GreenMinds/
 │   ├── src/
 │   │   ├── index.mjs            # Express server setup
 │   │   ├── database_client.js   # Knex database configuration
+│   │   ├── swagger.js           # Swagger/OpenAPI configuration
 │   │   ├── middleware/
 │   │   │   ├── auth.js          # JWT verification
 │   │   │   ├── errorHandler.js  # Error handling
 │   │   │   ├── loginLimiter.js  # Rate limiting
 │   │   │   └── notFoundHandler.js
-│   │   └── routers/
-│   │       ├── auth.js          # Authentication routes
-│   │       └── plants.js        # Plants/favorites routes
+│   │   ├── routers/
+│   │   |   ├── auth.js          # Authentication routes
+│   │   |   ├── plants.js        # Plants/favorites routes
+│   │   │   └── users.js         # User profile routes
+│   │   └── services/
+│   │       └── plantService.js  # PlantBook integration and favorites logic
 │   ├── migrations/               # Database schema
 │   ├── seeds/                    # Demo data
-│   ├── .env                      # Environment configuration
+│   ├── .env-template             # Environment variable reference (copy to .env locally)
 │   └── package.json
 ├── app/                          # Frontend (in progress)
 ├── templates/                    # Frontend starter templates
 └── README.md
 ```
+
+---
+
+## Key Technical Decisions
+
+A few choices worth explaining, beyond just listing the tech stack:
+
+- **Centralized error handling middleware** — instead of each route formatting its own error responses, all unexpected errors flow through one `errorHandler.js`, so the response format stays consistent and internal error details (like database error messages) never leak to the client.
+- **Rate limiting on login only, not signup** — login is the realistic target for brute-force password guessing; signup doesn't expose that same risk, so it was left unrestricted to avoid blocking legitimate new users.
+- **Email normalization (lowercase) at signup and login** — avoids users accidentally creating duplicate accounts, or failing to log in, due to inconsistent capitalization in their email address.
 
 ---
 
@@ -181,17 +209,25 @@ GreenMinds/
 - User authentication (signup, login, JWT tokens)
 - Password security (bcrypt hashing)
 - Plant favorites management (CRUD operations)
-- Database migrations and seeds
 - API documentation (Swagger/OpenAPI)
 - Rate limiting on login endpoint
 - Email validation and normalization
 - Bearer token authentication on protected routes
+- User profile management (view, update, delete account)
 
 ### 🔄 In Progress
 
 - Frontend implementation (choose template: Vanilla JS, React, or Next.js)
 - Additional plant features (watering schedule)
-- User profile management
+
+### Not Yet Implemented (Optional)
+
+These were listed as optional ideas in the project requirements:
+
+- Automated tests (integration tests for key endpoints)
+- CI pipeline (GitHub Actions on each PR)
+- Pagination, sorting, and filtering on list endpoints
+- Role-based access control (admin vs regular user)
 
 ---
 
