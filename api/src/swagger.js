@@ -26,6 +26,15 @@ const options = {
         "API for tracking and managing favorite plants, built as a HackYourFuture final project.",
     },
     servers: servers,
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./src/routers/*.js"],
 };
