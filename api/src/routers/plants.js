@@ -3,6 +3,7 @@ import { auth } from "../middleware/auth.js";
 import connection from "../database_client.js";
 import {
   getPlantBookToken,
+  fetchPlantCareDetails,
   fetchPlantDetails,
   findOrCreatePlant,
   isFavoriteExisting,
@@ -12,14 +13,20 @@ const router = express.Router();
 
 const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
 
-function extractCareDetails(plantData) {
-  const care = plantData?.care ?? {};
-
-  return {
-    watering: care.watering ?? plantData?.watering ?? null,
-    sunlight: care.sunlight ?? plantData?.sunlight ?? plantData?.light ?? null,
-  };
-}
+router.get("/care/:pid", auth, async (req, res, next) => {
+  try {
+    const pid = req.params.pid;
+    const token = await getPlantBookToken(
+      PLANTBOOK_API_URL,
+      process.env.PLANTBOOK_CLIENT_ID,
+      process.env.PLANTBOOK_CLIENT_SECRET,
+    );
+    const care = await fetchPlantCareDetails(PLANTBOOK_API_URL, pid, token);
+    res.json(care);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get("/options", async (_req, res, next) => {
   try {
@@ -110,31 +117,33 @@ router.get("/favorites", auth, async (req, res, next) => {
         if (!token) {
           return {
             ...favorite,
-            watering: null,
             sunlight: null,
+            watering: null,
+            soil: null,
+            fertilization: null,
+            pruning: null,
           };
         }
 
         try {
-          const plantData = await fetchPlantDetails(
+          const care = await fetchPlantCareDetails(
             PLANTBOOK_API_URL,
             favorite.pid,
             token,
-            {
-              include: "care",
-              lang: "en",
-            },
           );
 
           return {
             ...favorite,
-            ...extractCareDetails(plantData),
+            ...care,
           };
         } catch {
           return {
             ...favorite,
-            watering: null,
             sunlight: null,
+            watering: null,
+            soil: null,
+            fertilization: null,
+            pruning: null,
           };
         }
       }),
@@ -196,15 +205,30 @@ router.post("/favorites", auth, async (req, res, next) => {
     if (!pid) {
       return res.status(400).json({ error: "pid(plantBook ID) is required" });
     }
-    //Get PlantBook token
-    const token = await getPlantBookToken(
-      PLANTBOOK_API_URL,
-      process.env.PLANTBOOK_CLIENT_ID,
-      process.env.PLANTBOOK_CLIENT_SECRET,
-    );
+    const normalizedPid = String(pid).trim();
+    const existingPlant = await connection("favorite_plants")
+      .select("id")
+      .where({ pid: normalizedPid })
+      .first();
 
-    const plantData = await fetchPlantDetails(PLANTBOOK_API_URL, pid, token);
-    const plantId = await findOrCreatePlant(pid, plantData, alias);
+    let plantId = existingPlant?.id;
+
+    if (!plantId) {
+      // Get PlantBook token only when we need to create a new plant record.
+      const token = await getPlantBookToken(
+        PLANTBOOK_API_URL,
+        process.env.PLANTBOOK_CLIENT_ID,
+        process.env.PLANTBOOK_CLIENT_SECRET,
+      );
+
+      const plantData = await fetchPlantDetails(
+        PLANTBOOK_API_URL,
+        normalizedPid,
+        token,
+      );
+      plantId = await findOrCreatePlant(normalizedPid, plantData, alias);
+    }
+
     const existingFav = await isFavoriteExisting(userId, plantId);
     if (existingFav) {
       return res.status(400).json({ error: "plant already in favorites" });
