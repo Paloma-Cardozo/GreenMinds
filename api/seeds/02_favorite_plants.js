@@ -1,9 +1,12 @@
+import "dotenv/config";
+
 const PLANTBOOK_BASE_URL = "https://open.plantbook.io/api/v1";
 
 async function getAccessToken() {
   const response = await fetch(`${PLANTBOOK_BASE_URL}/token/`, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    headers: { "Content-Type": "application/x-www-form-urlencoded", 
+      "Accept": "application/json"},
     body: new URLSearchParams({
       grant_type: "client_credentials",
       client_id: process.env.PLANTBOOK_CLIENT_ID,

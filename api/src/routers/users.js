@@ -5,6 +5,33 @@ import db from "../database_client.js";
 const usersRouter = Router();
 
 // GET /api/users/me
+/**
+ * @swagger
+ * /users/me:
+ *   get:
+ *     summary: Get current logged-in user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 created_at:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ */
 usersRouter.get("/me", auth, async (req, res, next) => {
   try {
     const user = await db("users")
@@ -21,6 +48,31 @@ usersRouter.get("/me", auth, async (req, res, next) => {
     next(err);
   }
 });
+/**
+ * @swagger
+ * /users/me:
+ *   put:
+ *     summary: Update current user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated user
+ *       401:
+ *         description: Unauthorized
+ */
 usersRouter.put("/me", auth, async (req, res, next) => {
   const { username, email } = req.body;
 
@@ -35,6 +87,20 @@ usersRouter.put("/me", auth, async (req, res, next) => {
     next(err);
   }
 });
+/**
+ * @swagger
+ * /users/me:
+ *   delete:
+ *     summary: Delete current user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User deleted
+ *       401:
+ *         description: Unauthorized
+ */
 usersRouter.delete("/me", auth, async (req, res, next) => {
   try {
     await db("users").where({ id: req.user.id }).del();
