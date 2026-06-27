@@ -6,20 +6,38 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="overlay-card">
-      <h2>Login</h2>
+    <!-- HEADER -->
+    <header>
+      <h2>🌿 GreenMinds</h2>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#search">Search Plant</a>
+      </nav>
+    </header>
 
-      <p id="selectedPlant"></p>
+    <!-- LOGIN SECTION -->
+    <section class="login-hero">
+      <div class="login-card">
+        <h2>Welcome Back 🌱</h2>
 
-      <form onsubmit="handleLogin(event)">
-        <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
+        <p id="selectedPlant"></p>
 
-        <button type="submit">Login</button>
-      </form>
+        <form onsubmit="handleLogin(event)">
+          <input type="email" id="email" placeholder="Email" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
 
-      <p id="message"></p>
-    </div>
+          <button type="submit">Login</button>
+        </form>
+
+        <p id="message"></p>
+      </div>
+    </section>
 
     <script src="script.js"></script>
   </body>
