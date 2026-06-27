@@ -197,6 +197,77 @@ async function handleSaveSelectedPlant() {
   }
 }
 
+async function loadPlantCarePreview(pid) {
+  const carePreviewElement = document.getElementById("plantCarePreview");
+  if (!carePreviewElement) return;
+
+  const token = getAuthToken();
+  if (!token) {
+    carePreviewElement.hidden = true;
+    return;
+  }
+
+  carePreviewElement.hidden = false;
+  const loadingMsg = document.createElement("p");
+  loadingMsg.textContent = "Loading care details...";
+  carePreviewElement.replaceChildren(loadingMsg);
+
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/plants/care/${encodeURIComponent(pid)}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+
+    if (!response.ok) {
+      carePreviewElement.hidden = true;
+      return;
+    }
+
+    const care = await parseJsonResponse(response);
+    if (!care) {
+      carePreviewElement.hidden = true;
+      return;
+    }
+
+    const careFields = [
+      { label: "☀️ Sunlight", value: care.sunlight },
+      { label: "💧 Watering", value: care.watering },
+      { label: "🌱 Soil", value: care.soil },
+      { label: "🌿 Fertilization", value: care.fertilization },
+      { label: "✂️ Pruning", value: care.pruning },
+    ];
+
+    const hasCareData = careFields.some(({ value }) => value);
+
+    if (!hasCareData) {
+      carePreviewElement.hidden = true;
+      return;
+    }
+
+    const heading = document.createElement("h3");
+    heading.textContent = "Care Guide";
+
+    const list = document.createElement("ul");
+    list.className = "care-details";
+
+    careFields.forEach(({ label, value }) => {
+      if (!value) return;
+      const li = document.createElement("li");
+      const strong = document.createElement("strong");
+      strong.textContent = `${label}: `;
+      const span = document.createElement("span");
+      span.textContent = value;
+      li.appendChild(strong);
+      li.appendChild(span);
+      list.appendChild(li);
+    });
+
+    carePreviewElement.replaceChildren(heading, list);
+  } catch {
+    carePreviewElement.hidden = true;
+  }
+}
+
 async function loadPlantOptions() {
   const plantSelect = document.getElementById("plantSelect");
 
@@ -230,6 +301,16 @@ async function loadPlantOptions() {
       option.value = plant.pid;
       option.textContent = plant.alias || plant.pid;
       plantSelect.appendChild(option);
+    });
+
+    plantSelect.addEventListener("change", async () => {
+      const pid = plantSelect.value;
+      if (pid) {
+        await loadPlantCarePreview(pid);
+      } else {
+        const carePreviewElement = document.getElementById("plantCarePreview");
+        if (carePreviewElement) carePreviewElement.hidden = true;
+      }
     });
   } catch (error) {
     const errorOption = document.createElement("option");
@@ -370,14 +451,6 @@ async function loadFavoritePlants() {
       const subtitle = document.createElement("p");
       subtitle.textContent = `Plant ID: ${favorite.pid}`;
 
-      const sunlight = document.createElement("p");
-      sunlight.className = "favorite-detail";
-      sunlight.textContent = `Sunlight: ${favorite.sunlight || "Not specified"}`;
-
-      const watering = document.createElement("p");
-      watering.className = "favorite-detail";
-      watering.textContent = `Watering: ${favorite.watering || "Not specified"}`;
-
       const deleteButton = document.createElement("button");
       deleteButton.type = "button";
       deleteButton.className = "delete-favorite-btn";
@@ -443,12 +516,6 @@ async function loadFavoritePlants() {
         }
       });
 
-      item.appendChild(title);
-      item.appendChild(subtitle);
-      item.appendChild(sunlight);
-      item.appendChild(watering);
-      item.appendChild(deleteButton);
-
       if (favorite.img_url) {
         const image = document.createElement("img");
         image.src = favorite.img_url;
@@ -456,6 +523,40 @@ async function loadFavoritePlants() {
         image.className = "favorite-image";
         item.appendChild(image);
       }
+
+      const body = document.createElement("div");
+      body.className = "favorite-item-body";
+
+      body.appendChild(title);
+      body.appendChild(subtitle);
+
+      const careFields = [
+        { label: "☀️ Sunlight", value: favorite.sunlight },
+        { label: "💧 Watering", value: favorite.watering },
+        { label: "🌱 Soil", value: favorite.soil },
+        { label: "🌿 Fertilization", value: favorite.fertilization },
+        { label: "✂️ Pruning", value: favorite.pruning },
+      ];
+
+      const hasCareData = careFields.some(({ value }) => value);
+
+      if (!hasCareData) {
+        const noCare = document.createElement("p");
+        noCare.className = "favorite-detail favorite-detail--unavailable";
+        noCare.textContent = "Care details not yet available.";
+        body.appendChild(noCare);
+      } else {
+        careFields.forEach(({ label, value }) => {
+          if (!value) return;
+          const p = document.createElement("p");
+          p.className = "favorite-detail";
+          p.textContent = `${label}: ${value}`;
+          body.appendChild(p);
+        });
+      }
+
+      body.appendChild(deleteButton);
+      item.appendChild(body);
 
       favoritesListElement.appendChild(item);
     });
