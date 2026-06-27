@@ -98,7 +98,7 @@ The API will be available at `http://localhost:3001/api`
 
 ## API Endpoints
 
-### Authentication
+### Sign up and Login
 
 - **POST** `/api/auth/signup` — Register a new user
 
