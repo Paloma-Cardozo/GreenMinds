@@ -3,7 +3,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export const up = async function (knex) {
+export const up =  function (knex) {
   const exists = await knex.schema.hasColumn("users_favorite_plants", "id");
 
   if (!exists) {
@@ -13,7 +13,7 @@ export const up = async function (knex) {
   }
 };
 
-export const down = async function (knex) {
+export const down =  function (knex) {
   const exists = await knex.schema.hasColumn("users_favorite_plants", "id");
 
   if (exists) {
