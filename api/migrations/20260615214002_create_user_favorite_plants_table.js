@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export const up = async function (knex) {
+export const up =  function (knex) {
   return knex.schema.createTable("users_favorite_plants", (table) => {
     table.increments("id").primary(); //single primary key
     table
@@ -29,6 +29,6 @@ export const up = async function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export const down = async function (knex) {
+export const down =  function (knex) {
   return knex.schema.dropTable("users_favorite_plants");
 };
