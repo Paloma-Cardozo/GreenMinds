@@ -13,6 +13,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * /auth/signup:
  *   post:
  *     summary: Register a new user
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
@@ -110,6 +111,7 @@ authRouter.post(
  * /auth/login:
  *   post:
  *     summary: Log in an existing user
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
