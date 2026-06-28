@@ -135,6 +135,8 @@ authRouter.post(
  *         description: Missing email or password
  *       401:
  *         description: Email or password incorrect
+ *       429:
+ *         description: Too many login attempts, try again after the rate limit window
  */
 
 authRouter.post(
