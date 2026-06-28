@@ -8,6 +8,7 @@ import {
   isFavoriteExisting,
   addFavorite,
 } from "../services/plantService.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
 const router = express.Router();
 
 const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
@@ -52,8 +53,10 @@ const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
  *         description: Unauthorized
  */
 
-router.get("/favorites", auth, async (req, res, next) => {
-  try {
+router.get(
+  "/favorites",
+  auth,
+  asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const favorites = await connection("users_favorite_plants as ufp")
       .join("favorite_plants as fp", "fp.id", "ufp.plant_id")
@@ -68,10 +71,8 @@ router.get("/favorites", auth, async (req, res, next) => {
       .orderBy("ufp.saved_at", "DESC");
 
     res.json(favorites);
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 /**
  * @swagger
  * /favorites:
@@ -115,8 +116,10 @@ router.get("/favorites", auth, async (req, res, next) => {
  *         description: Plant not found in PlantBook API
  */
 
-router.post("/favorites", auth, async (req, res, next) => {
-  try {
+router.post(
+  "/favorites",
+  auth,
+  asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const { pid, alias } = req.body;
 
@@ -141,10 +144,8 @@ router.post("/favorites", auth, async (req, res, next) => {
       message: "plant added to favorites",
       favorite,
     });
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 /**
  * @swagger
@@ -178,8 +179,10 @@ router.post("/favorites", auth, async (req, res, next) => {
  */
 
 //Delete favorite
-router.delete("/favorites/:id", auth, async (req, res, next) => {
-  try {
+router.delete(
+  "/favorites/:id",
+  auth,
+  asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const favoriteId = req.params.id;
     const fav = await connection("users_favorite_plants")
@@ -191,9 +194,7 @@ router.delete("/favorites/:id", auth, async (req, res, next) => {
 
     await connection("users_favorite_plants").where({ id: favoriteId }).del();
     res.json({ message: "Favorite deleted successfully" });
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 export default router;
