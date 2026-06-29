@@ -229,6 +229,38 @@ GreenMinds/
 └── README.md
 ```
 
+## Entity-Relationship Diagram
+
+\\\mermaid
+erDiagram
+USERS ||--o{ USERS_FAVORITE_PLANTS : "has"
+FAVORITE_PLANTS ||--o{ USERS_FAVORITE_PLANTS : "favorited in"
+
+    USERS {
+        int id PK
+        string username UK
+        string email UK
+        string password_hash
+        timestamp created_at
+    }
+
+    FAVORITE_PLANTS {
+        int id PK
+        string pid UK
+        string alias
+        string img_url
+        timestamp created_at
+    }
+
+    USERS_FAVORITE_PLANTS {
+        int id PK
+        int user_id FK
+        int plant_id FK
+        timestamp saved_at
+    }
+
+\\\
+
 ---
 
 ## Key Technical Decisions
