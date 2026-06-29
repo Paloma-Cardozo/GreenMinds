@@ -1,0 +1,205 @@
+{
+  "info": {
+    "_postman_id": "2fc493b7-d9a7-41e6-8b6a-671edd723be2",
+    "name": "Easy Bloom Auth API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50787685",
+    "_collection_link": "https://go.postman.co/collection/50787685-2fc493b7-d9a7-41e6-8b6a-671edd723be2?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Signup - Create User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Verify status is 201 Created\r",
+              "pm.test(\"Signup successful - Status 201\", function () {\r",
+              "  pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "// Verify response contains required user fields\r",
+              "pm.test(\"Response contains user data\", function () {\r",
+              "  var jsonData = pm.response.json();\r",
+              "  pm.expect(jsonData).to.have.property(\"id\");\r",
+              "  pm.expect(jsonData).to.have.property(\"username\");\r",
+              "  pm.expect(jsonData).to.have.property(\"email\");\r",
+              "  pm.expect(jsonData).to.have.property(\"created_at\");\r",
+              "});\r",
+              "\r",
+              "// Save email for use in login request\r",
+              "pm.environment.set(\"user_email\", pm.response.json().email);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser1_paloma\",\r\n  \"email\": \"testuser1@example.com\",\r\n  \"password\": \"TestPassword1234\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/signup",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Login - Get JWT Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Verify status is 200 OK\r",
+              "pm.test(\"Login successful - Status 200\", function () {\r",
+              "  pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "// Verify response contains JWT token\r",
+              "pm.test(\"Response contains JWT token\", function () {\r",
+              "  var jsonData = pm.response.json();\r",
+              "  pm.expect(jsonData).to.have.property(\"token\");\r",
+              "  pm.expect(jsonData.token).to.be.a(\"string\");\r",
+              "});\r",
+              "\r",
+              "// Verify response contains user data\r",
+              "pm.test(\"Response contains user data\", function () {\r",
+              "  var jsonData = pm.response.json();\r",
+              "  pm.expect(jsonData).to.have.property(\"user\");\r",
+              "  pm.expect(jsonData.user).to.have.property(\"id\");\r",
+              "  pm.expect(jsonData.user).to.have.property(\"username\");\r",
+              "  pm.expect(jsonData.user).to.have.property(\"email\");\r",
+              "});\r",
+              "\r",
+              "// Save token for use in protected routes\r",
+              "pm.environment.set(\"token\", pm.response.json().token);\r",
+              "\r",
+              "// Verify token has valid JWT format (starts with \"eyJ\")\r",
+              "pm.test(\"Token has valid JWT format\", function () {\r",
+              "  var token = pm.response.json().token;\r",
+              "  pm.expect(token).to.match(/^eyJ/);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"TestPassword1234\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get Profile (Protected Route)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Verify protected route responds with 200 OK when token is valid\r",
+              "pm.test(\"Protected route works with valid token - Status 200\", function () {\r",
+              "  pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "// Verify response contains user profile data\r",
+              "pm.test(\"Returns user profile data\", function () {\r",
+              "  var jsonData = pm.response.json();\r",
+              "  pm.expect(jsonData).to.have.property(\"id\");\r",
+              "  pm.expect(jsonData).to.have.property(\"email\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/users/me",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
