@@ -2,6 +2,21 @@
 
 A full-stack application built by Hiwot, Juliana, Paloma and Shilpa at **Hack Your Future** to help users track and manage their favorite plants with personalized care guidance.
 
+## Table of Contents
+
+- [Team & Roles](#team--roles)
+- [Project Overview](#project-overview)
+- [Getting Started](#getting-started)
+- [API Endpoints](#api-endpoints)
+- [API Documentation](#api-documentation)
+- [Deployment & Demo Links](#deployment--demo-links)
+- [Project Structure](#project-structure)
+- [Key Technical Decisions](#key-technical-decisions)
+- [Current Status](#current-status)
+- [Development Notes](#development-notes)
+- [License](#license)
+- [Getting Help](#getting-help)
+
 ## Team & Roles
 
 | Person  | Primary focus                                                               |
@@ -169,6 +184,8 @@ http://localhost:3001/api-docs
 ```
 
 Use the "Authorize" button to test endpoints with your JWT token.
+
+---
 
 ## Deployment & Demo Links
 
