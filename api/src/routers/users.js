@@ -36,13 +36,21 @@ usersRouter.get(
   "/me",
   auth,
   asyncHandler(async (req, res) => {
+    if (!req.user || !req.user.id) {
+      const err = new Error("Unauthorized");
+      err.status = 401;
+      throw err;
+    }
+
     const user = await db("users")
       .where({ id: req.user.id })
       .select("id", "username", "email", "created_at")
       .first();
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      const err = new Error("User not found");
+      err.status = 404;
+      throw err;
     }
 
     res.json(user);
@@ -79,9 +87,59 @@ usersRouter.put(
   asyncHandler(async (req, res) => {
     const { username, email } = req.body;
 
+    // REQUIRED CHECK
+    if (!username && !email) {
+      return res
+        .status(400)
+        .json({ error: "At least username or email is required" });
+    }
+
+    //  TYPE CHECK
+    if (
+      (username && typeof username !== "string") ||
+      (email && typeof email !== "string")
+    ) {
+      return res.status(400).json({ error: "Username and email must be text" });
+    }
+
+    // EMAIL FORMAT CHECK
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email && !emailPattern.test(email.toLowerCase())) {
+      return res.status(400).json({ error: "Email must be valid" });
+    }
+
+    // CHECK IF EMAIL EXISTS
+    if (email) {
+      const existingEmail = await db("users")
+        .where({ email: email.toLowerCase() })
+        .andWhereNot({ id: req.user.id })
+        .first();
+
+      if (existingEmail) {
+        return res.status(400).json({ error: "Email already in use" });
+      }
+    }
+
+    //  CHECK IF USERNAME EXISTS
+    if (username) {
+      const existingUsername = await db("users")
+        .where({ username })
+        .andWhereNot({ id: req.user.id })
+        .first();
+
+      if (existingUsername) {
+        return res.status(400).json({ error: "Username already in use" });
+      }
+    }
+
+    // UPDATE DATA
     const updated = await db("users")
       .where({ id: req.user.id })
-      .update({ username, email })
+      .update({
+        ...(username && { username }),
+        ...(email && { email: email.toLowerCase() }),
+      })
       .returning(["id", "username", "email"]);
 
     res.json(Array.isArray(updated) ? updated[0] : updated);
@@ -105,7 +163,14 @@ usersRouter.delete(
   "/me",
   auth,
   asyncHandler(async (req, res) => {
-    await db("users").where({ id: req.user.id }).del();
+    const deleted = await db("users").where({ id: req.user.id }).del();
+
+    //  CHECK IF USER EXISTED
+    if (!deleted) {
+      const err = new Error("User not found");
+      err.status = 404;
+      throw err;
+    }
 
     res.json({ message: "User deleted successfully" });
   }),
