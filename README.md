@@ -1,246 +1,337 @@
-<img src="./images/hyf.svg" alt="image" width="200px" height="200px">
+# 🌿 Easy Bloom: Plant Care Guidance App
 
-# HackYourFuture project template
+A full-stack application built by Hiwot, Juliana, Paloma and Shilpa at **Hack Your Future** to help users track and manage their favorite plants with personalized care guidance.
 
-This full-stack app template is meant to be used as the starting point of any projects (including meal-sharing and final projects).
+## Table of Contents
 
-It consists of two packages:
+- [Team & Roles](#team--roles)
+- [Project Overview](#project-overview)
+- [Getting Started](#getting-started)
+- [API Endpoints](#api-endpoints)
+- [API Documentation](#api-documentation)
+- [Deployment & Demo Links](#deployment--demo-links)
+- [Project Structure](#project-structure)
+- [Entity-Relationship Diagram](#entity-relationship-diagram)
+- [Key Technical Decisions](#key-technical-decisions)
+- [Current Status](#current-status)
+- [Development Notes](#development-notes)
+- [License](#license)
+- [Getting Help](#getting-help)
 
-- `api` which is a NodeJS project using Express for the API, with options to connect to SQLite, MySQL and PostgreSQL databases.
-- `app` which has templates for Vanilla JS, Vite/React or NextJS/React for the web app
+## Team & Roles
 
-Both packages are as small as possible, but feel free to add more tools and templates as you see fit.
+| Person  | Primary focus                                                               |
+| ------- | --------------------------------------------------------------------------- |
+| Paloma  | Authentication, security (rate limiting), error handling, API documentation |
+| Juliana | Database design & schema, frontend                                          |
+| Hiwot   | Plants & Favorites API, PlantBook integration                               |
+| Shilpa  | User profile API, frontend                                                  |
 
-## Pre-requisites
+Mentored by Unmesh.
 
+---
 
+## Project Overview
 
-## Getting started
+Easy Bloom is a plant management platform where users can:
 
-> Before you start, make sure no other projects are running, in order to have the required ports free.
+- Create an account with secure authentication
+- Search and explore plant information via the PlantBook API
+- Save favorite plants to their personal collection
+- Access personalized plant care tips and guidance
 
-### Setting up the Database
+**Tech Stack:**
 
-This project template defaults to using an SQLite database, which is stored in a generated file in the api directory. It doesn't need a separate service to run. 
+- **Backend:** Node.js + Express.js
+- **Database:** PostgreSQL (with Knex.js migrations)
+- **Authentication:** JWT (JSON Web Tokens) with bcrypt password hashing
+- **API Documentation:** Swagger/OpenAPI
+- **Frontend:** (in progress: templates available)
 
-If you wish to use MySQL instead, here's a quick way to get one set up and running using Docker: 
-`docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql-root-password -e MYSQL_DATABASE=my-database -d -p 3306:3306 mysql:latest`
+---
 
-Whichever database you set up, connect to it using any database management tool of your choice, such as MySQL Workbench or DBeaver, to create your tables and add data.
-![Testing your database](./images/db_test.png)
+## Getting Started
 
-### Setting up the API
+### Prerequisites
 
-In a terminal, run the following commands:
+- **Node.js** v20.12.1 or higher
+- **npm** v10.5.0 or higher
+- **PostgreSQL** running locally or remote connection details
 
-```
-cd api
-cp .env-template .env
-```
+### Installation
 
-Open your .env file and configure the options as appropriate. The first thing you need to do is comment out/in the correct section in Database Configuration, depending on the database you chose in the first step. Set the variables to the correct values based on your set up.
+1. **Clone the repository:**
 
-Then you're ready to start it up:
+   ```bash
+   git clone https://github.com/Paloma-Cardozo/GreenMinds.git
+   cd GreenMinds/api
+   ```
 
-```
-npm install
+2. **Install dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables:**
+   - Copy `.env-template` to `.env`
+   - Fill in your configuration:
+
+     ```
+     PORT=3001
+     DB_CLIENT=pg
+     DB_HOST=localhost
+     DB_PORT=5432
+     DB_USER=postgres
+     DB_PASSWORD=your_password
+     DB_DATABASE_NAME=greenminds
+     DB_USE_SSL=false
+
+     JWT_SECRET=your_secret_key_here
+     PLANTBOOK_CLIENT_ID=your_client_id
+     PLANTBOOK_CLIENT_SECRET=your_client_secret
+     ```
+
+4. **Create the database:**
+   - Using pgAdmin or your PostgreSQL client, create a database named `greenminds`
+
+5. **Run migrations:**
+
+   ```bash
+   npm run migrate:latest
+   ```
+
+6. **Seed demo data (optional):**
+   ```bash
+   npm run seed
+   ```
+   This creates 4 demo users (hiwot, juliana, paloma, shilpa) with passwords matching their usernames.
+
+### Running the Server
+
+**Development:**
+
+```bash
 npm run dev
 ```
 
-You can then test the API using [Postman](https://www.postman.com/) at [http://localhost:3001/api](http://localhost:3001/api) - or just open it in your browser, for a quick peek that things are connecting successfully!
+**Production:**
 
-![Testing the API with Postman](./images/api_test.png)
-
-### Setting up the App
-
-The app can be found in the `app` directory... but if this is a new project, it will be empty! Check out the `templates` directory, and copy over one of the options that best suits your needs (or you've been instructed to use).
-
-1. `app-vite-vanilla` - This is a vanilla js app, that is best suited for simple apps like the foundation final project.
-2. `app-vite` - Great for a more complex React app.
-3. `app-next` - Suitable for when you'd like to use the NextJS framework to build your app.
-
-In a second terminal, run the following commands:
-
-```
-cd app
-npm install
-npm run dev
+```bash
+npm start
 ```
 
-You can then open the web app at [http://localhost:3000](http://localhost:3000).
-![Testing the app with a browser](./images/app_test.png)
+The API will be available at `http://localhost:3001/api`
 
-## Common issues
+---
 
-### Port conflict
+## API Endpoints
 
-If you see the below error when trying to start either the API or the web app, then you have a port conflict.  
-Some other process is already listening on the port you want to use. Either stop that process or use another port by changing the PORT variable in the `.env` file for the package that is facing the conflict (API or web app).
+### Sign up and Login
 
-```
-node:events:496
-      throw er; // Unhandled 'error' event
-      ^
+- **POST** `/api/auth/signup` — Register a new user
 
-Error: listen EADDRINUSE: address already in use :::3001
-    at Server.setupListenHandle [as _listen2] (node:net:1897:16)
-    at listenInCluster (node:net:1945:12)
-    at Server.listen (node:net:2037:7)
-    at Function.listen (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/express/lib/application.js:635:24)
-    at file:///Users/hyf/dev/hyf/hyf-project-template/api/src/index.js:29:5
-    at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
-    at async ModuleLoader.import (node:internal/modules/esm/loader:323:24)
-    at async loadESM (node:internal/process/esm_loader:28:7)
-    at async handleMainPromise (node:internal/modules/run_main:113:12)
-Emitted 'error' event on Server instance at:
-    at emitErrorNT (node:net:1924:8)
-    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
-  code: 'EADDRINUSE',
-  errno: -48,
-  syscall: 'listen',
-  address: '::',
-  port: 3001
-}
-```
+  ```json
+  {
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "secure_password_8+"
+  }
+  ```
 
-### Wrong database credentials
+- **POST** `/api/auth/login` — Login and receive JWT token
+  ```json
+  {
+    "email": "john@example.com",
+    "password": "secure_password_8+"
+  }
+  ```
+  Returns: `{ token: "jwt_token", user: { id, username, email } }`
 
-If you see the error below when trying to make a query to your database it means that the variables `DB_USER` and `DB_PASSWORD` don't match the username and password used when starting the database container. Either find the right credentials or recreate your database container and store the new credentials.
+### Plants & Favorites
 
-```
-/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/mysql2/lib/packets/packet.js:728
-    const err = new Error(message);
-                ^
+All endpoints require `Authorization: Bearer <token>` header.
 
-Error: Access denied for user 'root'@'192.168.65.1' (using password: YES)
-    at Packet.asError (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/mysql2/lib/packets/packet.js:728:17)
-    at ClientHandshake.execute (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/mysql2/lib/commands/command.js:29:26)
-    at Connection.handlePacket (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/mysql2/lib/connection.js:481:34)
-    at PacketParser.onPacket (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/mysql2/lib/connection.js:97:12)
-    at PacketParser.executeStart (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/mysql2/lib/packet_parser.js:75:16)
-    at Socket.<anonymous> (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/mysql2/lib/connection.js:104:25)
-    at Socket.emit (node:events:519:28)
-    at addChunk (node:internal/streams/readable:559:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
-    at Readable.push (node:internal/streams/readable:390:5) {
-  code: 'ER_ACCESS_DENIED_ERROR',
-  errno: 1045,
-  sqlState: '28000',
-  sqlMessage: "Access denied for user 'root'@'192.168.65.1' (using password: YES)",
-  sql: undefined
-}
-```
+- **GET** `/api/plants/favorites` — Get user's favorite plants
+- **POST** `/api/plants/favorites` — Add a plant to favorites
+  ```json
+  {
+    "pid": "plantsdb_id",
+    "alias": "optional_custom_name"
+  }
+  ```
+- **DELETE** `/api/plants/favorites/:id` — Remove a favorite plant
 
-### Using SSL when the database does not support it
+### User Profile
 
-If you see the below error, then you are trying to establish a SSL (secure) connection to a database that doesn't support it, most likely you set the value of the environment variable `DB_USE_SSL` to "true" when it should be "false".
+All endpoints require `Authorization: Bearer <token>` header, and act on the currently logged-in user (there's no way to view or edit another user's profile).
+
+- **GET** `/api/users/me` — Get the logged-in user's profile (`id`, `username`, `email`, `created_at`)
+- **PUT** `/api/users/me` — Update the logged-in user's `username` and/or `email`
+  ```json
+  {
+    "username": "new_username",
+    "email": "new_email@example.com"
+  }
+  ```
+- **DELETE** `/api/users/me` — Permanently delete the logged-in user's account
+
+---
+
+## API Documentation
+
+Interactive API documentation is available at:
 
 ```
-/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/pg/lib/connection.js:77
-          return self.emit('error', new Error('The server does not support SSL connections'))
-                                    ^
+http://localhost:3001/api-docs
+```
 
-Error: The server does not support SSL connections
-    at Socket.<anonymous> (/Users/hyf/dev/hyf/hyf-project-template/api/node_modules/pg/lib/connection.js:77:37)
-    at Object.onceWrapper (node:events:633:26)
-    at Socket.emit (node:events:518:28)
-    at addChunk (node:internal/streams/readable:559:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
-    at Readable.push (node:internal/streams/readable:390:5)
-    at TCP.onStreamRead (node:internal/stream_base_commons:190:23)
+Use the "Authorize" button to test endpoints with your JWT token.
 
-Node.js v20.12.2
-[nodemon] app crashed - waiting for file changes before starting...
+---
 
-Database not running or wrong address:
-API listening on port 3001
-node:internal/process/promises:289
-            triggerUncaughtException(err, true /* fromPromise */);
-            ^
+## Deployment & Demo Links
 
-AggregateError [ECONNREFUSED]:
-    at internalConnectMultiple (node:net:1116:18)
-    at afterConnectMultiple (node:net:1683:7) {
-  code: 'ECONNREFUSED',
-  fatal: true,
-  [errors]: [
-    Error: connect ECONNREFUSED ::1:3306
-        at createConnectionError (node:net:1646:14)
-        at afterConnectMultiple (node:net:1676:16) {
-      errno: -61,
-      code: 'ECONNREFUSED',
-      syscall: 'connect',
-      address: '::1',
-      port: 3306
-    },
-    Error: connect ECONNREFUSED 127.0.0.1:3306
-        at createConnectionError (node:net:1646:14)
-        at afterConnectMultiple (node:net:1676:16) {
-      errno: -61,
-      code: 'ECONNREFUSED',
-      syscall: 'connect',
-      address: '127.0.0.1',
-      port: 3306
+| Resource           | Link                                                                         |
+| ------------------ | ---------------------------------------------------------------------------- |
+| Deployed API       | _Pending deployment_                                                         |
+| Deployed API docs  | _Pending deployment_                                                         |
+| Postman collection | [Easy-Bloom-Auth-API-Collection.json](./Easy-Bloom-Auth-API-Collection.json) |
+
+This section will be updated once the team deploys to Render and publishes a Postman collection.
+
+---
+
+## Project Structure
+
+```
+GreenMinds/
+├── api/                          # Backend
+│   ├── src/
+│   │   ├── index.mjs            # Express server setup
+│   │   ├── database_client.js   # Knex database configuration
+│   │   ├── swagger.js           # Swagger/OpenAPI configuration
+│   │   ├── middleware/
+│   │   │   ├── asyncHandler.js  # Wraps async routes to forward errors automatically
+│   │   │   ├── auth.js          # JWT verification
+│   │   │   ├── errorHandler.js  # Error handling
+│   │   │   ├── loginLimiter.js  # Rate limiting
+│   │   │   └── notFoundHandler.js
+│   │   ├── routers/
+│   │   |   ├── auth.js          # Authentication routes
+│   │   |   ├── plants.js        # Plants/favorites routes
+│   │   │   └── users.js         # User profile routes
+│   │   └── services/
+│   │       └── plantService.js  # PlantBook integration and favorites logic
+│   ├── migrations/               # Database schema
+│   ├── seeds/                    # Demo data
+│   ├── .env-template             # Environment variable reference (copy to .env locally)
+│   └── package.json
+├── app/                          # Frontend (in progress)
+├── templates/                    # Frontend starter templates
+└── README.md
+```
+
+---
+
+## Entity-Relationship Diagram
+
+```mermaid
+erDiagram
+USERS ||--o{ USERS_FAVORITE_PLANTS : "has"
+FAVORITE_PLANTS ||--o{ USERS_FAVORITE_PLANTS : "favorited in"
+
+    USERS {
+        int id PK
+        string username UK
+        string email UK
+        string password_hash
+        timestamp created_at
     }
-  ]
-}
+
+    FAVORITE_PLANTS {
+        int id PK
+        string pid UK
+        string alias
+        string img_url
+        timestamp created_at
+    }
+
+    USERS_FAVORITE_PLANTS {
+        int id PK
+        int user_id FK
+        int plant_id FK
+        timestamp saved_at
+    }
 ```
 
-### Broken TypeScript config file
-This boilerplate does not use TypeScript, but Next which is used in the `app` package has built in support for TypeScript.
-This means that Next (or rather `esbuild` which is used internally) will look for a TypeScript config file (`tsconfig.json`) in the current folder and all parent folders until it finds one.
-If it does find a TypeScript config file but that file is invalid or empty you'll see errors like this:
+---
 
+## Key Technical Decisions
+
+A few choices worth explaining, beyond just listing the tech stack:
+
+- **Centralized error handling middleware** — instead of each route formatting its own error responses, all unexpected errors flow through one `errorHandler.js`, so the response format stays consistent and internal error details (database error messages) never leak to the client.
+- **`asyncHandler` wrapper for all async routes** — Express 4 doesn't automatically catch errors from `async` routes, so one unhandled rejection could crash the entire server. Wrapping every route in a small reusable function fixes this once, following DRY, instead of relying on every route remembering its own `try/catch`.
+- **Rate limiting on login only, not signup** — login is the realistic target for brute-force password guessing; signup doesn't expose that same risk, so it was left unrestricted to avoid blocking legitimate new users.
+- **Email normalization (lowercase) at signup and login** — avoids users accidentally creating duplicate accounts, or failing to log in, due to inconsistent capitalization in their email address.
+
+---
+
+## Current Status
+
+### ✅ Completed
+
+- User authentication (signup, login, JWT tokens)
+- Password security (bcrypt hashing)
+- Plant favorites management (CRUD operations)
+- API documentation (Swagger/OpenAPI)
+- Rate limiting on login endpoint
+- Email validation and normalization
+- Bearer token authentication on protected routes
+- User profile management (view, update, delete account)
+
+### 🔄 In Progress
+
+- Frontend implementation (choose template: Vanilla JS, React, or Next.js)
+- Additional plant features (watering schedule)
+
+### Not Yet Implemented (Optional)
+
+These were listed as optional ideas in the project requirements:
+
+- Automated tests (integration tests for key endpoints)
+- CI pipeline (GitHub Actions on each PR)
+- Pagination, sorting, and filtering on list endpoints
+- Role-based access control (admin vs regular user)
+
+---
+
+## Development Notes
+
+### Database Migrations
+
+Migrations are managed with Knex.js. To create a new migration:
+
+```bash
+npx knex migrate:make migration_name
 ```
-✘ [ERROR] Unexpected end of file in JSON
 
-    ../../tsconfig.json:1:0:
-      1 │ 
-        ╵ ^
+---
 
-failed to load config from /Users/milton/dev/hyf/hyf-project-template/app/next.config.js
-error when starting dev server:
-Error: Build failed with 1 error:
-../../tsconfig.json:1:0: ERROR: Unexpected end of file in JSON
-    at failureErrorWithLog (/Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:1651:15)
-    at /Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:1059:25
-    at runOnEndCallbacks (/Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:1486:45)
-    at buildResponseToResult (/Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:1057:7)
-    at /Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:1086:16
-    at responseCallbacks.<computed> (/Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:704:9)
-    at handleIncomingPacket (/Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:764:9)
-    at Socket.readFromStdout (/Users/milton/dev/hyf/hyf-project-template/app/node_modules/esbuild/lib/main.js:680:7)
-    at Socket.emit (node:events:519:28)
-    at addChunk (node:internal/streams/readable:559:12)
-```
+## License
 
-There are 3 possible solutions:
-1. Delete the offending TypeScript config file
-2. Fix the issue in the file so that Next can use it
-3. Move your project folder to some place that doesn't put the TypeScript config file in the parent folder of your project folder
+This is a Hack Your Future educational project.
 
-## Architecture diagram
+---
 
-![Architecture](./images/architecture.png)
+## Getting Help
 
-## Applying consistent formatting
+For issues or questions:
 
-Before you commit any changes you've made, you can run the command `npm run format` in either package to format the code using [Prettier](https://prettier.io/).
+1. Check the API documentation at `/api-docs`
+2. Review the `.env-template` for required configuration
+3. Ensure PostgreSQL is running and accessible
+4. Check console logs for error messages
 
-Using a consistent code style makes it easier to read code which improves productivity and avoid bugs.  
-When collaborating with other people, a code base should still look like it was written by a single person.
-
-## Checking for common code problems
-
-Before you commit your changes, you can use `npm run check` in either package to check for code issues using [ESLint](https://eslint.org/).
-
-ESLint is a "linter", a tool that scans your code for common code problems, this can help you avoid bugs and write better code.
-
-## Deploying
-
-All 3 components (database, API, web app) can be deployed for free at [Render.com](https://render.com).
-Sign in using your Github account to make the process smoother.
-When you sign in you can specify which of your repositories you want Render.com to have access to.
-
-[Database and API deployment instructions](./api/README.md#deploying)  
-[App deployment instructions](./app/README.md#deploying-a-static-web-app)
+---

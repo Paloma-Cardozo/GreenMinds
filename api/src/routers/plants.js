@@ -9,6 +9,7 @@ import {
   isFavoriteExisting,
   addFavorite,
 } from "../services/plantService.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
 const router = express.Router();
 
 const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
@@ -49,7 +50,7 @@ router.get("/options", async (_req, res, next) => {
 
 /**
  * @swagger
- * /favorites:
+ * /plants/favorites:
  *   get:
  *     summary: Get all favorite plants for the authenticated user
  *     tags: [Favorites]
@@ -79,10 +80,16 @@ router.get("/options", async (_req, res, next) => {
  *                     format: date-time
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/favorites", auth, async (req, res, next) => {
-  try {
+router.get(
+  "/favorites",
+  auth,
+  asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const favorites = await connection("users_favorite_plants as ufp")
       .join("favorite_plants as fp", "fp.id", "ufp.plant_id")
@@ -156,7 +163,7 @@ router.get("/favorites", auth, async (req, res, next) => {
 });
 /**
  * @swagger
- * /favorites:
+ * /plants/favorites:
  *   post:
  *     summary: Add a plant to the user's favorites
  *     tags: [Favorites]
@@ -191,14 +198,28 @@ router.get("/favorites", auth, async (req, res, next) => {
  *                   type: object
  *       400:
  *         description: Missing pid or plant already favorited
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Plant not found in PlantBook API
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
-router.post("/favorites", auth, async (req, res, next) => {
-  try {
+router.post(
+  "/favorites",
+  auth,
+  asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const { pid, alias } = req.body;
 
@@ -238,14 +259,12 @@ router.post("/favorites", auth, async (req, res, next) => {
       message: "plant added to favorites",
       favorite,
     });
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 /**
  * @swagger
- * /favorites/{id}:
+ * /plants/favorites/{id}:
  *   delete:
  *     summary: Remove a plant from the user's favorites
  *     tags: [Favorites]
@@ -270,13 +289,22 @@ router.post("/favorites", auth, async (req, res, next) => {
  *                   type: string
  *       404:
  *         description: Favorite not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
-//Delete favorite
-router.delete("/favorites/:id", auth, async (req, res, next) => {
-  try {
+router.delete(
+  "/favorites/:id",
+  auth,
+  asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const favoriteId = req.params.id;
     const fav = await connection("users_favorite_plants")
@@ -290,9 +318,7 @@ router.delete("/favorites/:id", auth, async (req, res, next) => {
       .where({ plant_id: favoriteId, user_id: userId })
       .del();
     res.json({ message: "Favorite deleted successfully" });
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 export default router;

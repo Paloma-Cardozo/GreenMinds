@@ -1,5 +1,13 @@
 export function errorHandler(err, req, res, next) {
-  console.error(err);
+  console.error(`[${req.method} ${req.originalUrl}]`, err);
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  if (err.type === "entity.parse.failed") {
+    return res.status(400).json({ error: "Invalid JSON in request body" });
+  }
 
   let status = err.status;
   if (!status) {

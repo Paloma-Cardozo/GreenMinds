@@ -3,15 +3,16 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../database_client.js";
 import { loginLimiter } from "../middleware/loginLimiter.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
 
 const authRouter = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 /**
  * @swagger
  * /auth/signup:
  *   post:
  *     summary: Register a new user
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
@@ -35,42 +36,51 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  *     responses:
  *       201:
  *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Validation error, or email/username already in use
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
-authRouter.post("/signup", async (req, res, next) => {
-  const { username, email, password } = req.body;
+authRouter.post(
+  "/signup",
+  asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body;
 
-  if (!username || !email || !password) {
-    return res
-      .status(400)
-      .json({ error: "Username, email, and password are required" });
-  }
+    if (!username || !email || !password) {
+      return res
+        .status(400)
+        .json({ error: "Username, email, and password are required" });
+    }
 
-  if (
-    typeof username !== "string" ||
-    typeof email !== "string" ||
-    typeof password !== "string"
-  ) {
-    return res
-      .status(400)
-      .json({ error: "Username, email, and password must be text" });
-  }
+    if (
+      typeof username !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Username, email, and password must be text" });
+    }
 
-  const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.toLowerCase();
 
-  if (!emailPattern.test(normalizedEmail)) {
-    return res.status(400).json({ error: "Email must be valid" });
-  }
+    if (!emailPattern.test(normalizedEmail)) {
+      return res.status(400).json({ error: "Email must be valid" });
+    }
 
-  if (password.length < 8) {
-    return res
-      .status(400)
-      .json({ error: "Password must be at least 8 characters" });
-  }
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters" });
+    }
 
-  try {
     const existingEmail = await db("users")
       .where({ email: normalizedEmail })
       .first();
@@ -100,16 +110,15 @@ authRouter.post("/signup", async (req, res, next) => {
     }
 
     res.status(201).json(user);
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 /**
  * @swagger
  * /auth/login:
  *   post:
  *     summary: Log in an existing user
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
@@ -129,26 +138,58 @@ authRouter.post("/signup", async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Login successful, returns a JWT token and basic user info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
  *       400:
  *         description: Missing email or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Email or password incorrect
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       429:
+ *         description: Too many login attempts, try again after the rate limit window
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
-authRouter.post("/login", loginLimiter, async (req, res, next) => {
-  const { email, password } = req.body;
+authRouter.post(
+  "/login",
+  loginLimiter,
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password are required" });
-  }
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
 
-  if (typeof email !== "string" || typeof password !== "string") {
-    return res.status(400).json({ error: "Email and password must be text" });
-  }
+    if (typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({ error: "Email and password must be text" });
+    }
 
-  const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.toLowerCase();
 
-  try {
     const user = await db("users").where({ email: normalizedEmail }).first();
 
     if (!user) {
@@ -175,9 +216,7 @@ authRouter.post("/login", loginLimiter, async (req, res, next) => {
         email: user.email,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+);
 
 export { authRouter };
