@@ -7,7 +7,6 @@ import { asyncHandler } from "../middleware/asyncHandler.js";
 
 const authRouter = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 /**
  * @swagger
  * /auth/signup:
