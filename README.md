@@ -11,6 +11,7 @@ A full-stack application built by Hiwot, Juliana, Paloma and Shilpa at **Hack Yo
 - [API Documentation](#api-documentation)
 - [Deployment & Demo Links](#deployment--demo-links)
 - [Project Structure](#project-structure)
+- [Entity-Relationship Diagram](#entity-relationship-diagram)
 - [Key Technical Decisions](#key-technical-decisions)
 - [Current Status](#current-status)
 - [Development Notes](#development-notes)
@@ -27,6 +28,8 @@ A full-stack application built by Hiwot, Juliana, Paloma and Shilpa at **Hack Yo
 | Shilpa  | User profile API, frontend                                                  |
 
 Mentored by Unmesh.
+
+---
 
 ## Project Overview
 
@@ -189,11 +192,11 @@ Use the "Authorize" button to test endpoints with your JWT token.
 
 ## Deployment & Demo Links
 
-| Resource           | Link                 |
-| ------------------ | -------------------- |
-| Deployed API       | _Pending deployment_ |
-| Deployed API docs  | _Pending deployment_ |
-| Postman collection | _Pending_            |
+| Resource           | Link                                                                         |
+| ------------------ | ---------------------------------------------------------------------------- |
+| Deployed API       | _Pending deployment_                                                         |
+| Deployed API docs  | _Pending deployment_                                                         |
+| Postman collection | [Easy-Bloom-Auth-API-Collection.json](./Easy-Bloom-Auth-API-Collection.json) |
 
 This section will be updated once the team deploys to Render and publishes a Postman collection.
 
@@ -229,9 +232,11 @@ GreenMinds/
 └── README.md
 ```
 
+---
+
 ## Entity-Relationship Diagram
 
-\\\mermaid
+```mermaid
 erDiagram
 USERS ||--o{ USERS_FAVORITE_PLANTS : "has"
 FAVORITE_PLANTS ||--o{ USERS_FAVORITE_PLANTS : "favorited in"
@@ -258,8 +263,7 @@ FAVORITE_PLANTS ||--o{ USERS_FAVORITE_PLANTS : "favorited in"
         int plant_id FK
         timestamp saved_at
     }
-
-\\\
+```
 
 ---
 
