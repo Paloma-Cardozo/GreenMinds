@@ -98,7 +98,7 @@ router.get(
         "fp.pid",
         "fp.alias",
         "fp.img_url",
-        "ufp.saved_at",
+        "ufp.saved_at"
       )
       .where("ufp.user_id", userId)
       .orderBy("ufp.saved_at", "DESC");
@@ -113,7 +113,7 @@ router.get(
       token = await getPlantBookToken(
         PLANTBOOK_API_URL,
         process.env.PLANTBOOK_CLIENT_ID,
-        process.env.PLANTBOOK_CLIENT_SECRET,
+        process.env.PLANTBOOK_CLIENT_SECRET
       );
     } catch {
       token = null;
@@ -136,7 +136,7 @@ router.get(
           const care = await fetchPlantCareDetails(
             PLANTBOOK_API_URL,
             favorite.pid,
-            token,
+            token
           );
 
           return {
@@ -153,14 +153,13 @@ router.get(
             pruning: null,
           };
         }
-      }),
+      })
     );
 
     res.json(enrichedFavorites);
-  } catch (error) {
-    next(error);
-  }
-});
+  })
+);
+
 /**
  * @swagger
  * /plants/favorites:
