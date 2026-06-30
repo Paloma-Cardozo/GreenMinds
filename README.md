@@ -2,6 +2,32 @@
 
 A full-stack application built by Hiwot, Juliana, Paloma and Shilpa at **Hack Your Future** to help users track and manage their favorite plants with personalized care guidance.
 
+## Table of Contents
+
+- [Team & Roles](#team--roles)
+- [Project Overview](#project-overview)
+- [Getting Started](#getting-started)
+- [API Endpoints](#api-endpoints)
+- [API Documentation](#api-documentation)
+- [Deployment & Demo Links](#deployment--demo-links)
+- [Project Structure](#project-structure)
+- [Key Technical Decisions](#key-technical-decisions)
+- [Current Status](#current-status)
+- [Development Notes](#development-notes)
+- [License](#license)
+- [Getting Help](#getting-help)
+
+## Team & Roles
+
+| Person  | Primary focus                                                               |
+| ------- | --------------------------------------------------------------------------- |
+| Paloma  | Authentication, security (rate limiting), error handling, API documentation |
+| Juliana | Database design & schema, frontend                                          |
+| Hiwot   | Plants & Favorites API, PlantBook integration                               |
+| Shilpa  | User profile API, frontend                                                  |
+
+Mentored by Unmesh.
+
 ## Project Overview
 
 Easy Bloom is a plant management platform where users can:
@@ -161,6 +187,18 @@ Use the "Authorize" button to test endpoints with your JWT token.
 
 ---
 
+## Deployment & Demo Links
+
+| Resource           | Link                 |
+| ------------------ | -------------------- |
+| Deployed API       | _Pending deployment_ |
+| Deployed API docs  | _Pending deployment_ |
+| Postman collection | _Pending_            |
+
+This section will be updated once the team deploys to Render and publishes a Postman collection.
+
+---
+
 ## Project Structure
 
 ```
@@ -171,6 +209,7 @@ GreenMinds/
 │   │   ├── database_client.js   # Knex database configuration
 │   │   ├── swagger.js           # Swagger/OpenAPI configuration
 │   │   ├── middleware/
+│   │   │   ├── asyncHandler.js  # Wraps async routes to forward errors automatically
 │   │   │   ├── auth.js          # JWT verification
 │   │   │   ├── errorHandler.js  # Error handling
 │   │   │   ├── loginLimiter.js  # Rate limiting
@@ -190,13 +229,46 @@ GreenMinds/
 └── README.md
 ```
 
+## Entity-Relationship Diagram
+
+\\\mermaid
+erDiagram
+USERS ||--o{ USERS_FAVORITE_PLANTS : "has"
+FAVORITE_PLANTS ||--o{ USERS_FAVORITE_PLANTS : "favorited in"
+
+    USERS {
+        int id PK
+        string username UK
+        string email UK
+        string password_hash
+        timestamp created_at
+    }
+
+    FAVORITE_PLANTS {
+        int id PK
+        string pid UK
+        string alias
+        string img_url
+        timestamp created_at
+    }
+
+    USERS_FAVORITE_PLANTS {
+        int id PK
+        int user_id FK
+        int plant_id FK
+        timestamp saved_at
+    }
+
+\\\
+
 ---
 
 ## Key Technical Decisions
 
 A few choices worth explaining, beyond just listing the tech stack:
 
-- **Centralized error handling middleware** — instead of each route formatting its own error responses, all unexpected errors flow through one `errorHandler.js`, so the response format stays consistent and internal error details (like database error messages) never leak to the client.
+- **Centralized error handling middleware** — instead of each route formatting its own error responses, all unexpected errors flow through one `errorHandler.js`, so the response format stays consistent and internal error details (database error messages) never leak to the client.
+- **`asyncHandler` wrapper for all async routes** — Express 4 doesn't automatically catch errors from `async` routes, so one unhandled rejection could crash the entire server. Wrapping every route in a small reusable function fixes this once, following DRY, instead of relying on every route remembering its own `try/catch`.
 - **Rate limiting on login only, not signup** — login is the realistic target for brute-force password guessing; signup doesn't expose that same risk, so it was left unrestricted to avoid blocking legitimate new users.
 - **Email normalization (lowercase) at signup and login** — avoids users accidentally creating duplicate accounts, or failing to log in, due to inconsistent capitalization in their email address.
 
