@@ -21,7 +21,7 @@ const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
 
 /**
  * @swagger
- * /favorites:
+ * /plants/favorites:
  *   get:
  *     summary: Get all favorite plants for the authenticated user
  *     tags: [Favorites]
@@ -79,7 +79,7 @@ router.get(
 );
 /**
  * @swagger
- * /favorites:
+ * /plants/favorites:
  *   post:
  *     summary: Add a plant to the user's favorites
  *     tags: [Favorites]
@@ -165,7 +165,7 @@ router.post(
 
 /**
  * @swagger
- * /favorites/{id}:
+ * /plants/favorites/{id}:
  *   delete:
  *     summary: Remove a plant from the user's favorites
  *     tags: [Favorites]
@@ -202,7 +202,6 @@ router.post(
  *               $ref: '#/components/schemas/Error'
  */
 
-//Delete favorite
 router.delete(
   "/favorites/:id",
   auth,
