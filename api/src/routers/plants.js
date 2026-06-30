@@ -51,6 +51,10 @@ const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
  *                     format: date-time
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get(
@@ -110,10 +114,22 @@ router.get(
  *                   type: object
  *       400:
  *         description: Missing pid or plant already favorited
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Plant not found in PlantBook API
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.post(
@@ -174,8 +190,16 @@ router.post(
  *                   type: string
  *       404:
  *         description: Favorite not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 //Delete favorite
