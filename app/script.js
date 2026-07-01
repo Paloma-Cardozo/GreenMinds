@@ -9,7 +9,7 @@ function selectPlant() {
 
 // const API_BASE_URL = "http://localhost:3001/api";
 
-const API_BASE_URL = "https://easybloom.onrender.com/api";
+const API_BASE_URL = "https://easybloom-api.onrender.com/api";
 
 async function parseJsonResponse(response) {
   try {
