@@ -56,9 +56,19 @@
       <h2>🌱 Let's Take Care of Your Plant</h2>
       <p>Select your plant to begin</p>
 
-      <select id="plantSelect">
-        <option value="">-- Search Your Plant --</option>
-      </select>
+      <div class="plant-search-wrapper">
+        <input
+          type="text"
+          id="plantSearchInput"
+          placeholder="Search plants (e.g. tomato, monstera...)"
+          autocomplete="off"
+        />
+        <ul id="plantSearchResults" class="plant-search-results" hidden></ul>
+      </div>
+      <p id="plantSearchStatus" class="plant-search-status"></p>
+      <div id="plantSelectedDisplay" class="plant-selected-display" hidden>
+        Selected: <strong id="plantSelectedName"></strong>
+      </div>
 
       <div id="plantCarePreview" class="plant-care-preview" hidden></div>
 
