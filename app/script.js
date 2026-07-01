@@ -1,22 +1,13 @@
 function selectPlant() {
-  const plantSelect = document.getElementById("plantSelect");
-  const plant = plantSelect.value;
-
-  if (plant === "") {
-    alert("Please select a plant!");
+  const pid = localStorage.getItem("selectedPlantPid");
+  if (!pid) {
+    alert("Please select a plant first!");
     return;
   }
-
-  const selectedPlantLabel =
-    plantSelect.options[plantSelect.selectedIndex]?.text || plant;
-
-  localStorage.setItem("selectedPlant", selectedPlantLabel);
-  localStorage.setItem("selectedPlantPid", plant);
   window.location.href = "login.html";
 }
 
 const API_BASE_URL = "http://localhost:3001/api";
-let favoriteSearchOptions = [];
 
 async function parseJsonResponse(response) {
   try {
@@ -268,55 +259,143 @@ async function loadPlantCarePreview(pid) {
   }
 }
 
-async function loadPlantOptions() {
-  const plantSelect = document.getElementById("plantSelect");
+function initPlantSearch() {
+  const inputEl = document.getElementById("plantSearchInput");
+  if (!inputEl) return;
 
-  if (!plantSelect) {
-    return;
+  // Restore previously selected plant on page load
+  const storedPid = localStorage.getItem("selectedPlantPid");
+  const storedLabel = localStorage.getItem("selectedPlant");
+  if (storedPid && storedLabel) {
+    inputEl.value = storedLabel;
+    const displayEl = document.getElementById("plantSelectedDisplay");
+    const nameEl = document.getElementById("plantSelectedName");
+    if (nameEl) nameEl.textContent = storedLabel;
+    if (displayEl) displayEl.hidden = false;
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/plants/options`);
-    const plants = await parseJsonResponse(response);
+  let debounceTimer = null;
 
-    if (!response.ok) {
-      throw new Error(getApiErrorMessage(plants, "Could not load plants"));
-    }
+  inputEl.addEventListener("input", () => {
+    const q = inputEl.value.trim();
+    const resultsEl = document.getElementById("plantSearchResults");
+    const statusEl = document.getElementById("plantSearchStatus");
+    const displayEl = document.getElementById("plantSelectedDisplay");
+    const carePreviewEl = document.getElementById("plantCarePreview");
 
-    if (!Array.isArray(plants) || plants.length === 0) {
-      const emptyOption = document.createElement("option");
-      emptyOption.value = "";
-      emptyOption.textContent = "-- No plants available yet --";
-      plantSelect.replaceChildren(emptyOption);
+    // Clear selection when user starts typing new query
+    if (displayEl) displayEl.hidden = true;
+    if (carePreviewEl) carePreviewEl.hidden = true;
+    localStorage.removeItem("selectedPlantPid");
+    localStorage.removeItem("selectedPlant");
+
+    if (q.length < 3) {
+      if (resultsEl) {
+        resultsEl.hidden = true;
+        resultsEl.replaceChildren();
+      }
+      if (statusEl) statusEl.textContent = "";
+      clearTimeout(debounceTimer);
       return;
     }
 
-    const placeholderOption = document.createElement("option");
-    placeholderOption.value = "";
-    placeholderOption.textContent = "-- Search Your Plant --";
-    plantSelect.replaceChildren(placeholderOption);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => searchPlantBookPlants(q), 350);
+  });
 
-    plants.forEach((plant) => {
-      const option = document.createElement("option");
-      option.value = plant.pid;
-      option.textContent = plant.alias || plant.pid;
-      plantSelect.appendChild(option);
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    const resultsEl = document.getElementById("plantSearchResults");
+    if (
+      resultsEl &&
+      !inputEl.contains(e.target) &&
+      !resultsEl.contains(e.target)
+    ) {
+      resultsEl.hidden = true;
+    }
+  });
+}
+
+async function searchPlantBookPlants(q) {
+  const resultsEl = document.getElementById("plantSearchResults");
+  const statusEl = document.getElementById("plantSearchStatus");
+
+  if (!resultsEl) return;
+
+  if (statusEl) statusEl.textContent = "Searching...";
+  resultsEl.hidden = true;
+  resultsEl.replaceChildren();
+
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/plants/search?q=${encodeURIComponent(q)}&limit=20`,
+    );
+    const data = await parseJsonResponse(response);
+
+    if (!response.ok) {
+      if (statusEl)
+        statusEl.textContent = getApiErrorMessage(data, "Search failed.");
+      return;
+    }
+
+    const results = Array.isArray(data?.results)
+      ? data.results
+      : Array.isArray(data)
+        ? data
+        : [];
+
+    if (results.length === 0) {
+      if (statusEl) statusEl.textContent = "No plants found.";
+      return;
+    }
+
+    if (statusEl)
+      statusEl.textContent = `${results.length} plant${
+        results.length === 1 ? "" : "s"
+      } found`;
+
+    results.forEach((plant) => {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "plant-result-btn";
+
+      const label = plant.alias || plant.display_pid || plant.pid;
+      const nameSpan = document.createElement("span");
+      nameSpan.textContent = label;
+
+      const pidSmall = document.createElement("small");
+      pidSmall.textContent = plant.pid !== label ? ` (${plant.pid})` : "";
+
+      btn.appendChild(nameSpan);
+      btn.appendChild(pidSmall);
+
+      btn.addEventListener("click", () => {
+        localStorage.setItem("selectedPlant", label);
+        localStorage.setItem("selectedPlantPid", plant.pid);
+
+        const inputEl = document.getElementById("plantSearchInput");
+        if (inputEl) inputEl.value = label;
+
+        const displayEl = document.getElementById("plantSelectedDisplay");
+        const nameEl = document.getElementById("plantSelectedName");
+        if (nameEl) nameEl.textContent = label;
+        if (displayEl) displayEl.hidden = false;
+
+        resultsEl.hidden = true;
+        resultsEl.replaceChildren();
+        if (statusEl) statusEl.textContent = "";
+
+        loadPlantCarePreview(plant.pid);
+      });
+
+      li.appendChild(btn);
+      resultsEl.appendChild(li);
     });
 
-    plantSelect.addEventListener("change", async () => {
-      const pid = plantSelect.value;
-      if (pid) {
-        await loadPlantCarePreview(pid);
-      } else {
-        const carePreviewElement = document.getElementById("plantCarePreview");
-        if (carePreviewElement) carePreviewElement.hidden = true;
-      }
-    });
+    resultsEl.hidden = false;
   } catch (error) {
-    const errorOption = document.createElement("option");
-    errorOption.value = "";
-    errorOption.textContent = `-- ${error.message} --`;
-    plantSelect.replaceChildren(errorOption);
+    if (statusEl) statusEl.textContent = error.message;
   }
 }
 
@@ -565,120 +644,127 @@ async function loadFavoritePlants() {
   }
 }
 
-function renderFavoritesSearchResults(searchTerm) {
-  const searchResultsElement = document.getElementById(
-    "favoritesSearchResults",
-  );
-  const searchMessageElement = document.getElementById(
-    "favoritesSearchMessage",
-  );
+function initFavoritesSearch() {
+  const inputEl = document.getElementById("favoritesPlantSearch");
+  if (!inputEl) return;
 
-  if (!searchResultsElement || !searchMessageElement) {
-    return;
-  }
+  let debounceTimer = null;
 
-  if (!searchTerm) {
-    searchResultsElement.replaceChildren();
-    searchResultsElement.hidden = true;
-    searchMessageElement.textContent = "";
-    return;
-  }
+  inputEl.addEventListener("input", () => {
+    const q = inputEl.value.trim();
+    const resultsEl = document.getElementById("favoritesSearchResults");
+    const statusEl = document.getElementById("favoritesSearchMessage");
 
-  const normalizedTerm = searchTerm.toLowerCase();
-  const matches = favoriteSearchOptions
-    .filter((plant) => {
-      const alias = String(plant.alias || "").toLowerCase();
-      const pid = String(plant.pid || "").toLowerCase();
-      return alias.includes(normalizedTerm) || pid.includes(normalizedTerm);
-    })
-    .slice(0, 8);
-
-  if (matches.length === 0) {
-    searchResultsElement.replaceChildren();
-    searchResultsElement.hidden = true;
-    searchMessageElement.textContent = "No plants found.";
-    return;
-  }
-
-  searchMessageElement.textContent = `${matches.length} plant${matches.length === 1 ? "" : "s"} found`;
-  searchResultsElement.replaceChildren();
-  searchResultsElement.hidden = false;
-
-  matches.forEach((plant) => {
-    const listItem = document.createElement("li");
-    const resultButton = document.createElement("button");
-
-    resultButton.type = "button";
-    resultButton.className = "search-result-btn";
-    resultButton.textContent = `${plant.alias || plant.pid} (${plant.pid})`;
-    resultButton.onclick = () => {
-      localStorage.setItem("selectedPlant", plant.alias || plant.pid);
-      localStorage.setItem("selectedPlantPid", plant.pid);
-      renderSelectedPlantPrompt();
-
-      const selectedPlantPromptElement = document.getElementById(
-        "selectedPlantPrompt",
-      );
-
-      if (selectedPlantPromptElement) {
-        selectedPlantPromptElement.hidden = false;
-        selectedPlantPromptElement.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
+    if (q.length < 3) {
+      if (resultsEl) {
+        resultsEl.hidden = true;
+        resultsEl.replaceChildren();
       }
-    };
-
-    listItem.appendChild(resultButton);
-    searchResultsElement.appendChild(listItem);
-  });
-}
-
-async function loadFavoritesSearch() {
-  const searchInputElement = document.getElementById("favoritesPlantSearch");
-  const searchMessageElement = document.getElementById(
-    "favoritesSearchMessage",
-  );
-
-  if (!searchInputElement || !searchMessageElement) {
-    return;
-  }
-
-  searchMessageElement.textContent = "Loading plants from API...";
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/plants/options`);
-    const plants = await parseJsonResponse(response);
-
-    if (!response.ok) {
-      throw new Error(getApiErrorMessage(plants, "Could not load plants"));
-    }
-
-    favoriteSearchOptions = Array.isArray(plants) ? plants : [];
-
-    if (favoriteSearchOptions.length === 0) {
-      searchMessageElement.textContent = "No plants available in API yet.";
+      if (statusEl) statusEl.textContent = "";
+      clearTimeout(debounceTimer);
       return;
     }
 
-    searchMessageElement.textContent = "Start typing to search plants.";
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => searchFavoritesPlants(q), 350);
+  });
 
-    searchInputElement.addEventListener("input", (event) => {
-      renderFavoritesSearchResults(event.target.value.trim());
-    });
-  } catch (error) {
-    searchMessageElement.textContent = getApiErrorMessage(
-      null,
-      `${error.message}. Please try again.`,
+  document.addEventListener("click", (e) => {
+    const resultsEl = document.getElementById("favoritesSearchResults");
+    if (
+      resultsEl &&
+      !inputEl.contains(e.target) &&
+      !resultsEl.contains(e.target)
+    ) {
+      resultsEl.hidden = true;
+    }
+  });
+}
+
+async function searchFavoritesPlants(q) {
+  const resultsEl = document.getElementById("favoritesSearchResults");
+  const statusEl = document.getElementById("favoritesSearchMessage");
+
+  if (!resultsEl) return;
+
+  if (statusEl) statusEl.textContent = "Searching...";
+  resultsEl.hidden = true;
+  resultsEl.replaceChildren();
+
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/plants/search?q=${encodeURIComponent(q)}&limit=20`,
     );
+    const data = await parseJsonResponse(response);
+
+    if (!response.ok) {
+      if (statusEl)
+        statusEl.textContent = getApiErrorMessage(data, "Search failed.");
+      return;
+    }
+
+    const results = Array.isArray(data?.results)
+      ? data.results
+      : Array.isArray(data)
+        ? data
+        : [];
+
+    if (results.length === 0) {
+      if (statusEl) statusEl.textContent = "No plants found.";
+      return;
+    }
+
+    if (statusEl)
+      statusEl.textContent = `${results.length} plant${
+        results.length === 1 ? "" : "s"
+      } found`;
+
+    results.forEach((plant) => {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "search-result-btn";
+
+      const label = plant.alias || plant.display_pid || plant.pid;
+      const nameSpan = document.createElement("span");
+      nameSpan.textContent = label;
+      const pidSmall = document.createElement("small");
+      pidSmall.textContent = plant.pid !== label ? ` (${plant.pid})` : "";
+      btn.appendChild(nameSpan);
+      btn.appendChild(pidSmall);
+
+      btn.addEventListener("click", () => {
+        localStorage.setItem("selectedPlant", label);
+        localStorage.setItem("selectedPlantPid", plant.pid);
+
+        const input = document.getElementById("favoritesPlantSearch");
+        if (input) input.value = label;
+
+        resultsEl.hidden = true;
+        resultsEl.replaceChildren();
+        if (statusEl) statusEl.textContent = "";
+
+        renderSelectedPlantPrompt();
+        const promptEl = document.getElementById("selectedPlantPrompt");
+        if (promptEl)
+          promptEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+
+      li.appendChild(btn);
+      resultsEl.appendChild(li);
+    });
+
+    resultsEl.hidden = false;
+  } catch (error) {
+    if (statusEl) statusEl.textContent = error.message;
   }
 }
 
 renderSelectedPlant();
-loadPlantOptions();
+initPlantSearch();
 loadFavoritePlants();
 renderSelectedPlantPrompt();
-loadFavoritesSearch();
+initFavoritesSearch();
 
 window.handleLogout = handleLogout;
 window.handleSaveSelectedPlant = handleSaveSelectedPlant;
