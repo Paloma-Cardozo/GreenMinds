@@ -41,6 +41,38 @@ router.get("/options", async (_req, res, next) => {
   }
 });
 
+router.get(
+  "/search",
+  asyncHandler(async (req, res) => {
+    const q = String(req.query.q || "").trim();
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 20, 1), 50);
+
+    if (q.length < 3) {
+      return res.json({ count: 0, results: [] });
+    }
+
+    const token = await getPlantBookToken(
+      PLANTBOOK_API_URL,
+      process.env.PLANTBOOK_CLIENT_ID,
+      process.env.PLANTBOOK_CLIENT_SECRET,
+    );
+
+    const searchUrl = `${PLANTBOOK_API_URL}/plant/search?alias=${encodeURIComponent(q)}&limit=${limit}`;
+    const response = await fetch(searchUrl, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      const error = new Error(`PlantBook search failed: ${response.status} ${response.statusText}`);
+      error.status = response.status;
+      throw error;
+    }
+
+    const data = await response.json();
+    res.json(data);
+  }),
+);
+
 /**
  * @swagger
  * tags:
