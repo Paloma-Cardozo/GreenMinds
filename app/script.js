@@ -765,7 +765,176 @@ initPlantSearch();
 loadFavoritePlants();
 renderSelectedPlantPrompt();
 initFavoritesSearch();
+initProfilePage();
 
 window.handleLogout = handleLogout;
 window.handleSaveSelectedPlant = handleSaveSelectedPlant;
 window.dismissSelectedPlantPrompt = dismissSelectedPlantPrompt;
+window.handleUpdateProfile = handleUpdateProfile;
+window.handleChangePassword = handleChangePassword;
+
+function initProfilePage() {
+  const usernameInput = document.getElementById("profileUsername");
+  if (!usernameInput) return;
+
+  const token = getAuthToken();
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const user = getStoredUser();
+  if (user) {
+    const emailInput = document.getElementById("profileEmail");
+    const profileGreeting = document.getElementById("profileGreeting");
+    if (usernameInput) usernameInput.placeholder = user.username || "Username";
+    if (emailInput) emailInput.placeholder = user.email || "Email";
+    if (profileGreeting)
+      profileGreeting.textContent = `Hello, ${user.username} 🌿`;
+  }
+}
+
+async function handleUpdateProfile(event) {
+  event.preventDefault();
+
+  const usernameInput = document.getElementById("profileUsername");
+  const emailInput = document.getElementById("profileEmail");
+  const messageEl = document.getElementById("profileMessage");
+
+  const username = usernameInput.value.trim();
+  const email = emailInput.value.trim();
+
+  if (!username && !email) {
+    messageEl.textContent = "Please provide a username or email to update.";
+    messageEl.className = "profile-message profile-message--error";
+    return;
+  }
+
+  const token = getAuthToken();
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  messageEl.textContent = "Saving changes...";
+  messageEl.className = "profile-message";
+
+  try {
+    const body = {};
+    if (username) body.username = username;
+    if (email) body.email = email;
+
+    const response = await fetch(`${API_BASE_URL}/users/me`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await parseJsonResponse(response);
+
+    if (response.status === 401) {
+      messageEl.textContent = getApiErrorMessage(
+        data,
+        "Session expired. Please login again.",
+      );
+      messageEl.className = "profile-message profile-message--error";
+      setTimeout(() => handleLogout(), 1200);
+      return;
+    }
+
+    if (!response.ok) {
+      messageEl.textContent = getApiErrorMessage(
+        data,
+        "Could not update profile.",
+      );
+      messageEl.className = "profile-message profile-message--error";
+      return;
+    }
+
+    const stored = getStoredUser();
+    localStorage.setItem("user", JSON.stringify({ ...stored, ...data }));
+
+    messageEl.textContent = "Profile updated successfully!";
+    messageEl.className = "profile-message profile-message--success";
+  } catch (error) {
+    messageEl.textContent = error.message || "Could not connect to server.";
+    messageEl.className = "profile-message profile-message--error";
+  }
+}
+
+async function handleChangePassword(event) {
+  event.preventDefault();
+
+  const currentPasswordInput = document.getElementById("currentPassword");
+  const newPasswordInput = document.getElementById("newPassword");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const messageEl = document.getElementById("passwordMessage");
+
+  const currentPassword = currentPasswordInput.value;
+  const newPassword = newPasswordInput.value;
+  const confirmPassword = confirmPasswordInput.value;
+
+  if (newPassword !== confirmPassword) {
+    messageEl.textContent = "New passwords do not match.";
+    messageEl.className = "profile-message profile-message--error";
+    return;
+  }
+
+  if (newPassword.length < 8) {
+    messageEl.textContent = "New password must be at least 8 characters.";
+    messageEl.className = "profile-message profile-message--error";
+    return;
+  }
+
+  const token = getAuthToken();
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  messageEl.textContent = "Changing password...";
+  messageEl.className = "profile-message";
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/me/password`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+
+    const data = await parseJsonResponse(response);
+
+    if (response.status === 401) {
+      messageEl.textContent = getApiErrorMessage(
+        data,
+        "Current password is incorrect.",
+      );
+      messageEl.className = "profile-message profile-message--error";
+      return;
+    }
+
+    if (!response.ok) {
+      messageEl.textContent = getApiErrorMessage(
+        data,
+        "Could not change password.",
+      );
+      messageEl.className = "profile-message profile-message--error";
+      return;
+    }
+
+    messageEl.textContent = "Password changed successfully!";
+    messageEl.className = "profile-message profile-message--success";
+    currentPasswordInput.value = "";
+    newPasswordInput.value = "";
+    confirmPasswordInput.value = "";
+  } catch (error) {
+    messageEl.textContent = error.message || "Could not connect to server.";
+    messageEl.className = "profile-message profile-message--error";
+  }
+}
