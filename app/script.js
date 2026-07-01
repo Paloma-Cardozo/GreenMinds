@@ -443,13 +443,11 @@ async function handleSignup(event) {
       return;
     }
 
-    messageElement.textContent = "Account created! Logging you in...";
-
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    messageElement.textContent = "Account created! Please log in.";
 
     setTimeout(() => {
-      window.location.href = "favorites.html";
+      toggleSignup(false);
+      document.getElementById("email").value = email;
     }, 800);
   } catch (error) {
     messageElement.textContent = getApiErrorMessage(
