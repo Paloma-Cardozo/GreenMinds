@@ -414,6 +414,51 @@ function renderSelectedPlant() {
     : "";
 }
 
+function toggleSignup(show) {
+  document.getElementById("loginSection").style.display = show ? "none" : "";
+  document.getElementById("signupSection").style.display = show ? "" : "none";
+}
+
+async function handleSignup(event) {
+  event.preventDefault();
+
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  const messageElement = document.getElementById("signupMessage");
+
+  messageElement.textContent = "Creating account...";
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    const data = await parseJsonResponse(response);
+
+    if (!response.ok) {
+      messageElement.textContent = getApiErrorMessage(data, "Signup failed");
+      return;
+    }
+
+    messageElement.textContent = "Account created! Logging you in...";
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    setTimeout(() => {
+      window.location.href = "favorites.html";
+    }, 800);
+  } catch (error) {
+    messageElement.textContent = getApiErrorMessage(
+      null,
+      error.message || "Could not connect to the server. Please try again.",
+    );
+  }
+}
+
 async function handleLogin(event) {
   event.preventDefault();
 
