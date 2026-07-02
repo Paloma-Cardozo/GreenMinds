@@ -116,8 +116,13 @@ router.get(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
-
 router.get(
   "/favorites",
   auth,
@@ -227,6 +232,16 @@ router.get(
  *                   type: string
  *                 favorite:
  *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     user_id:
+ *                       type: integer
+ *                     plant_id:
+ *                       type: integer
+ *                     saved_at:
+ *                       type: string
+ *                       format: date-time
  *       400:
  *         description: Missing pid or plant already favorited
  *         content:
