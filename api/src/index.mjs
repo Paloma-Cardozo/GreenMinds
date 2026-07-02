@@ -41,6 +41,11 @@ app.use("/api", apiRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
+knex
+  .raw("SELECT 1")
+  .then(() => console.log("Database connected"))
+  .catch((err) => console.error("Database connection failed:", err.message));
+
 app.listen(process.env.PORT || 3001, () => {
   const port = process.env.PORT || 3001;
   console.log(`API listening on port ${port}`);
