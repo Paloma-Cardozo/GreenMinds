@@ -14,38 +14,40 @@ const router = express.Router();
 
 const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
 
-router.get("/care/:pid", auth, async (req, res, next) => {
-  try {
+router.get(
+  "/care/:pid",
+  auth,
+  asyncHandler(async (req, res) => {
     const pid = req.params.pid;
     const token = await getPlantBookToken(
       PLANTBOOK_API_URL,
       process.env.PLANTBOOK_CLIENT_ID,
-      process.env.PLANTBOOK_CLIENT_SECRET,
+      process.env.PLANTBOOK_CLIENT_SECRET
     );
     const care = await fetchPlantCareDetails(PLANTBOOK_API_URL, pid, token);
     res.json(care);
-  } catch (error) {
-    next(error);
-  }
-});
+  })
+);
 
-router.get("/options", async (_req, res, next) => {
-  try {
+router.get(
+  "/options",
+  asyncHandler(async (_req, res) => {
     const plants = await connection("favorite_plants")
       .select("id", "pid", "alias", "img_url")
       .orderByRaw("LOWER(COALESCE(alias, pid)) ASC");
 
     res.json(plants);
-  } catch (error) {
-    next(error);
-  }
-});
+  })
+);
 
 router.get(
   "/search",
   asyncHandler(async (req, res) => {
     const q = String(req.query.q || "").trim();
-    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 20, 1), 50);
+    const limit = Math.min(
+      Math.max(parseInt(req.query.limit, 10) || 20, 1),
+      50
+    );
 
     if (q.length < 3) {
       return res.json({ count: 0, results: [] });
@@ -54,7 +56,7 @@ router.get(
     const token = await getPlantBookToken(
       PLANTBOOK_API_URL,
       process.env.PLANTBOOK_CLIENT_ID,
-      process.env.PLANTBOOK_CLIENT_SECRET,
+      process.env.PLANTBOOK_CLIENT_SECRET
     );
 
     const searchUrl = `${PLANTBOOK_API_URL}/plant/search?alias=${encodeURIComponent(q)}&limit=${limit}`;
@@ -63,14 +65,16 @@ router.get(
     });
 
     if (!response.ok) {
-      const error = new Error(`PlantBook search failed: ${response.status} ${response.statusText}`);
+      const error = new Error(
+        `PlantBook search failed: ${response.status} ${response.statusText}`
+      );
       error.status = response.status;
       throw error;
     }
 
     const data = await response.json();
     res.json(data);
-  }),
+  })
 );
 
 /**
@@ -285,13 +289,13 @@ router.post(
       const token = await getPlantBookToken(
         PLANTBOOK_API_URL,
         process.env.PLANTBOOK_CLIENT_ID,
-        process.env.PLANTBOOK_CLIENT_SECRET,
+        process.env.PLANTBOOK_CLIENT_SECRET
       );
 
       const plantData = await fetchPlantDetails(
         PLANTBOOK_API_URL,
         normalizedPid,
-        token,
+        token
       );
       plantId = await findOrCreatePlant(normalizedPid, plantData, alias);
     }
@@ -305,7 +309,7 @@ router.post(
       message: "plant added to favorites",
       favorite,
     });
-  }),
+  })
 );
 
 /**
@@ -364,7 +368,7 @@ router.delete(
       .where({ plant_id: favoriteId, user_id: userId })
       .del();
     res.json({ message: "Favorite deleted successfully" });
-  }),
+  })
 );
 
 export default router;

@@ -24,7 +24,7 @@ export async function getPlantBookToken(apiUrl, clientId, clientSecret) {
   if (!response.ok) {
     const responseBody = await response.text();
     const error = new Error(
-      `Token request failed: ${response.status} ${response.statusText}${responseBody ? ` - ${responseBody}` : ""}`,
+      `Token request failed: ${response.status} ${response.statusText}${responseBody ? ` - ${responseBody}` : ""}`
     );
     error.status = response.status;
     throw error;
@@ -54,31 +54,17 @@ export async function fetchPlantDetails(apiUrl, pid, token, query = {}) {
 
 function describeLightLevel(min, max) {
   if (min == null || max == null) return null;
-  const avg = (min + max) / 2;
-  let label;
-  if (avg < 1000) label = "Low light";
-  else if (avg < 3000) label = "Medium indirect light";
-  else if (avg < 6000) label = "Bright indirect light";
-  else label = "Full sun / direct light";
-  return `${label} (${min}–${max} lux)`;
+  return `${min}–${max} lux`;
 }
 
 function describeWatering(min, max) {
   if (min == null || max == null) return null;
-  let label;
-  if (max < 20) label = "Allow to dry out completely between waterings";
-  else if (max < 40) label = "Water when top soil is dry";
-  else label = "Keep soil consistently moist";
-  return `${label} (soil moisture ${min}–${max}%)`;
+  return `Soil moisture ${min}–${max}%`;
 }
 
 function describeSoil(min, max) {
   if (min == null || max == null) return null;
-  let label;
-  if (max < 500) label = "Low-nutrient / lean mix";
-  else if (max < 1500) label = "Standard well-draining potting mix";
-  else label = "Rich, fertile mix";
-  return `${label} (EC ${min}–${max} µS/cm)`;
+  return `EC ${min}–${max} µS/cm`;
 }
 
 export async function fetchPlantCareDetails(apiUrl, pid, token) {

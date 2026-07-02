@@ -57,10 +57,10 @@ function handleLogout() {
 
 function dismissSelectedPlantPrompt() {
   const selectedPlantPromptElement = document.getElementById(
-    "selectedPlantPrompt",
+    "selectedPlantPrompt"
   );
   const selectedPlantActionMessageElement = document.getElementById(
-    "selectedPlantActionMessage",
+    "selectedPlantActionMessage"
   );
 
   if (!selectedPlantPromptElement || !selectedPlantActionMessageElement) {
@@ -73,11 +73,11 @@ function dismissSelectedPlantPrompt() {
 
 function renderSelectedPlantPrompt() {
   const selectedPlantPromptElement = document.getElementById(
-    "selectedPlantPrompt",
+    "selectedPlantPrompt"
   );
   const selectedPlantNameElement = document.getElementById("selectedPlantName");
   const selectedPlantActionMessageElement = document.getElementById(
-    "selectedPlantActionMessage",
+    "selectedPlantActionMessage"
   );
 
   if (
@@ -103,10 +103,10 @@ function renderSelectedPlantPrompt() {
 
 async function handleSaveSelectedPlant() {
   const selectedPlantActionMessageElement = document.getElementById(
-    "selectedPlantActionMessage",
+    "selectedPlantActionMessage"
   );
   const saveSelectedPlantButtonElement = document.getElementById(
-    "saveSelectedPlantButton",
+    "saveSelectedPlantButton"
   );
 
   if (!selectedPlantActionMessageElement || !saveSelectedPlantButtonElement) {
@@ -151,7 +151,7 @@ async function handleSaveSelectedPlant() {
     if (response.status === 401) {
       selectedPlantActionMessageElement.textContent = getApiErrorMessage(
         data,
-        "Session expired. Please login again.",
+        "Session expired. Please login again."
       );
       setTimeout(() => {
         handleLogout();
@@ -163,15 +163,17 @@ async function handleSaveSelectedPlant() {
       response.status === 400 &&
       data?.error === "plant already in favorites"
     ) {
-      selectedPlantActionMessageElement.textContent =
-        "This plant is already in your favorites.";
+      selectedPlantActionMessageElement.textContent = getApiErrorMessage(
+        data,
+        "This plant is already in your favorites."
+      );
       await loadFavoritePlants();
       return;
     }
 
     if (!response.ok) {
       throw new Error(
-        getApiErrorMessage(data, "Could not save selected plant"),
+        getApiErrorMessage(data, "Could not save selected plant")
       );
     }
 
@@ -208,7 +210,7 @@ async function loadPlantCarePreview(pid) {
   try {
     const response = await fetch(
       `${API_BASE_URL}/plants/care/${encodeURIComponent(pid)}`,
-      { headers: { Authorization: `Bearer ${token}` } },
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
     if (!response.ok) {
@@ -330,7 +332,7 @@ async function searchPlantBookPlants(q) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/plants/search?q=${encodeURIComponent(q)}&limit=20`,
+      `${API_BASE_URL}/plants/search?q=${encodeURIComponent(q)}&limit=20`
     );
     const data = await parseJsonResponse(response);
 
@@ -452,7 +454,7 @@ async function handleSignup(event) {
   } catch (error) {
     messageElement.textContent = getApiErrorMessage(
       null,
-      error.message || "Could not connect to the server. Please try again.",
+      error.message || "Could not connect to the server. Please try again."
     );
   }
 }
@@ -495,7 +497,7 @@ async function handleLogin(event) {
   } catch (error) {
     messageElement.textContent = getApiErrorMessage(
       null,
-      error.message || "Could not connect to the server. Please try again.",
+      error.message || "Could not connect to the server. Please try again."
     );
   }
 }
@@ -542,7 +544,7 @@ async function loadFavoritePlants() {
     if (response.status === 401) {
       favoritesMessageElement.textContent = getApiErrorMessage(
         favorites,
-        "Session expired. Please login again.",
+        "Session expired. Please login again."
       );
       setTimeout(() => {
         handleLogout();
@@ -552,7 +554,7 @@ async function loadFavoritePlants() {
 
     if (!response.ok) {
       throw new Error(
-        getApiErrorMessage(favorites, "Could not load favorite plants"),
+        getApiErrorMessage(favorites, "Could not load favorite plants")
       );
     }
 
@@ -582,7 +584,7 @@ async function loadFavoritePlants() {
       deleteButton.addEventListener("click", async () => {
         const plantName = favorite.alias || favorite.pid;
         const confirmed = window.confirm(
-          `Remove ${plantName} from your favorites?`,
+          `Remove ${plantName} from your favorites?`
         );
 
         if (!confirmed) {
@@ -600,7 +602,7 @@ async function loadFavoritePlants() {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            },
+            }
           );
 
           const deleteData = await parseJsonResponse(deleteResponse);
@@ -608,7 +610,7 @@ async function loadFavoritePlants() {
           if (deleteResponse.status === 401) {
             favoritesMessageElement.textContent = getApiErrorMessage(
               deleteData,
-              "Session expired. Please login again.",
+              "Session expired. Please login again."
             );
             setTimeout(() => {
               handleLogout();
@@ -618,7 +620,7 @@ async function loadFavoritePlants() {
 
           if (!deleteResponse.ok) {
             throw new Error(
-              getApiErrorMessage(deleteData, "Could not delete favorite"),
+              getApiErrorMessage(deleteData, "Could not delete favorite")
             );
           }
 
@@ -738,7 +740,7 @@ async function searchFavoritesPlants(q) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/plants/search?q=${encodeURIComponent(q)}&limit=20`,
+      `${API_BASE_URL}/plants/search?q=${encodeURIComponent(q)}&limit=20`
     );
     const data = await parseJsonResponse(response);
 
@@ -883,7 +885,7 @@ async function handleUpdateProfile(event) {
     if (response.status === 401) {
       messageEl.textContent = getApiErrorMessage(
         data,
-        "Session expired. Please login again.",
+        "Session expired. Please login again."
       );
       messageEl.className = "profile-message profile-message--error";
       setTimeout(() => handleLogout(), 1200);
@@ -893,7 +895,7 @@ async function handleUpdateProfile(event) {
     if (!response.ok) {
       messageEl.textContent = getApiErrorMessage(
         data,
-        "Could not update profile.",
+        "Could not update profile."
       );
       messageEl.className = "profile-message profile-message--error";
       return;
@@ -958,7 +960,7 @@ async function handleChangePassword(event) {
     if (response.status === 401) {
       messageEl.textContent = getApiErrorMessage(
         data,
-        "Current password is incorrect.",
+        "Current password is incorrect."
       );
       messageEl.className = "profile-message profile-message--error";
       return;
@@ -967,7 +969,7 @@ async function handleChangePassword(event) {
     if (!response.ok) {
       messageEl.textContent = getApiErrorMessage(
         data,
-        "Could not change password.",
+        "Could not change password."
       );
       messageEl.className = "profile-message profile-message--error";
       return;
