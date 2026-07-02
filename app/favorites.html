@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Favorite Plants - GreenMinds</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h2>🌿 GreenMinds</h2>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+    </header>
+
+    <div class="favorites-banner">
+      <h1>🌿 My Favorite Plants</h1>
+      <p>Manage and explore your personal plant collection</p>
+    </div>
+
+    <main class="favorites-page">
+      <section class="favorites-card">
+        <h2 id="favoritesHeading" class="favorites-section-title">
+          Your Collection
+        </h2>
+        <div class="favorites-search" aria-live="polite">
+          <label for="favoritesPlantSearch">Search &amp; add a plant</label>
+          <input
+            type="search"
+            id="favoritesPlantSearch"
+            placeholder="Type at least 3 characters (e.g. tomato, monstera...)"
+            autocomplete="off"
+          />
+          <p id="favoritesSearchMessage" class="favorites-search-message"></p>
+          <ul
+            id="favoritesSearchResults"
+            class="favorites-search-results"
+            hidden
+          ></ul>
+        </div>
+        <div id="selectedPlantPrompt" class="selected-plant-prompt" hidden>
+          <h2 id="selectedPlantName"></h2>
+          <p>Do you want to save this selected plant as your favorite?</p>
+          <p
+            id="selectedPlantActionMessage"
+            class="selected-plant-action-message"
+          ></p>
+          <div class="selected-plant-actions">
+            <button
+              type="button"
+              id="saveSelectedPlantButton"
+              onclick="handleSaveSelectedPlant()"
+            >
+              Save as Favorite
+            </button>
+            <button
+              type="button"
+              class="secondary-btn"
+              onclick="dismissSelectedPlantPrompt()"
+            >
+              No, thanks
+            </button>
+          </div>
+        </div>
+        <p id="favoritesMessage"></p>
+        <ul id="favoritesList" class="favorites-list"></ul>
+
+        <div class="favorites-actions">
+          <button type="button" onclick="handleLogout()">Logout</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
