@@ -1,4 +1,5 @@
 import { Router } from "express";
+import bcrypt from "bcrypt";
 import { auth } from "../middleware/auth.js";
 import db from "../database_client.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
@@ -175,4 +176,88 @@ usersRouter.delete(
     res.json({ message: "User deleted successfully" });
   }),
 );
+
+/**
+ * @swagger
+ * /users/me/password:
+ *   put:
+ *     summary: Change current user's password
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized or current password incorrect
+ */
+usersRouter.put(
+  "/me/password",
+  auth,
+  asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ error: "Current password and new password are required" });
+    }
+
+    if (
+      typeof currentPassword !== "string" ||
+      typeof newPassword !== "string"
+    ) {
+      return res.status(400).json({ error: "Passwords must be text" });
+    }
+
+    if (newPassword.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "New password must be at least 8 characters" });
+    }
+
+    const user = await db("users")
+      .where({ id: req.user.id })
+      .select("password_hash")
+      .first();
+
+    if (!user) {
+      const err = new Error("User not found");
+      err.status = 404;
+      throw err;
+    }
+
+    const passwordMatch = await bcrypt.compare(
+      currentPassword,
+      user.password_hash,
+    );
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+
+    const password_hash = await bcrypt.hash(newPassword, 10);
+
+    await db("users").where({ id: req.user.id }).update({ password_hash });
+
+    res.json({ message: "Password changed successfully" });
+  }),
+);
+
 export default usersRouter;

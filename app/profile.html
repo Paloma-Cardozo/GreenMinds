@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Profile - GreenMinds</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h2>🌿 GreenMinds</h2>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="favorites.html">My Favorites</a>
+      </nav>
+    </header>
+
+    <section class="profile-hero">
+      <div class="profile-page">
+        <p
+          id="profileGreeting"
+          style="
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+          "
+        ></p>
+
+        <!-- Update name / email -->
+        <div class="profile-card">
+          <h2>Edit Profile</h2>
+          <p class="profile-subtitle">Update your username or email address.</p>
+          <form onsubmit="handleUpdateProfile(event)">
+            <input
+              type="text"
+              id="profileUsername"
+              placeholder="Username"
+              autocomplete="username"
+            />
+            <input
+              type="email"
+              id="profileEmail"
+              placeholder="Email"
+              autocomplete="email"
+            />
+            <button type="submit">Save Changes</button>
+          </form>
+          <p id="profileMessage" class="profile-message"></p>
+        </div>
+
+        <!-- Change password -->
+        <div class="profile-card">
+          <h2>Change Password</h2>
+          <p class="profile-subtitle">
+            Enter your current password and choose a new one.
+          </p>
+          <form onsubmit="handleChangePassword(event)">
+            <input
+              type="password"
+              id="currentPassword"
+              placeholder="Current password"
+              autocomplete="current-password"
+              required
+            />
+            <input
+              type="password"
+              id="newPassword"
+              placeholder="New password (min 8 characters)"
+              autocomplete="new-password"
+              required
+            />
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm new password"
+              autocomplete="new-password"
+              required
+            />
+            <button type="submit">Change Password</button>
+          </form>
+          <p id="passwordMessage" class="profile-message"></p>
+        </div>
+
+        <div style="text-align: center">
+          <a href="favorites.html" class="profile-back-link"
+            >← Back to My Favorites</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
