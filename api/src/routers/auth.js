@@ -81,6 +81,10 @@ authRouter.post(
         .json({ error: "Password must be at least 8 characters" });
     }
 
+    if (password.includes(" ")) {
+      return res.status(400).json({ error: "Password cannot contain spaces" });
+    }
+
     const existingEmail = await db("users")
       .where({ email: normalizedEmail })
       .first();
@@ -110,7 +114,7 @@ authRouter.post(
     }
 
     res.status(201).json(user);
-  }),
+  })
 );
 
 /**
@@ -205,7 +209,7 @@ authRouter.post(
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "7d" }
     );
 
     res.json({
@@ -216,7 +220,7 @@ authRouter.post(
         email: user.email,
       },
     });
-  }),
+  })
 );
 
 export { authRouter };

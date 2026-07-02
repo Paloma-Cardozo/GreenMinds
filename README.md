@@ -192,11 +192,12 @@ Use the "Authorize" button to test endpoints with your JWT token.
 
 ## Deployment & Demo Links
 
-| Resource           | Link                                                                                             |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| Deployed API       | [https://easybloom.onrender.com](https://easybloom.onrender.com/api)                             |
-| Deployed API docs  | [https://greenminds-fe0k.onrender.com/api-docs/](https://greenminds-fe0k.onrender.com/api-docs/) |
-| Postman collection | [Easy-Bloom-Auth-API-Collection.json](./Easy-Bloom-Auth-API-Collection.json)                     |
+| Resource           | Link                                                                                           |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| Deployed API       | [https://greenminds-fe0k.onrender.com/api](https://greenminds-fe0k.onrender.com/api)           |
+| Deployed API docs  | [https://greenminds-fe0k.onrender.com/api-docs](https://greenminds-fe0k.onrender.com/api-docs) |
+| Deployed Frontend  | [https://easybloom.onrender.com/](https://easybloom.onrender.com/)                             |
+| Postman collection | [Easy-Bloom-Auth-API-Collection.json](./Easy-Bloom-Auth-API-Collection.json)                   |
 
 ---
 
