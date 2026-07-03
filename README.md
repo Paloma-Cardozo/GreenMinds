@@ -306,6 +306,32 @@ These were listed as optional ideas in the project requirements:
 
 ---
 
+## Known Limitations
+
+- **No role-based access control**: All authenticated users have the same permissions; no admin features
+- **No pagination on search results**: Plant search returns all matching results (up to API limit of 50)
+- **No email verification**: Email addresses are accepted without verification at signup
+- **Single-user data access only**: Users can only view and manage their own resources; cannot access other users' data
+- **PlantBook API dependency**: App relies entirely on external PlantBook API; no local plant database fallback if API is unavailable
+- **Frontend still in template form**: Frontend UI is not yet fully integrated with backend; currently using starter templates
+
+---
+
+## Future Improvements
+
+These features would enhance the app but are outside the current scope:
+
+- **Pagination and filtering**: Add pagination to search results and filtering by plant characteristics
+- **Email verification**: Require email confirmation before account activation
+- **Role-based access control**: Implement admin roles for moderation and analytics
+- **Local plant database caching**: Cache PlantBook data locally for offline functionality and faster searches
+- **Advanced plant tracking**: Add watering schedules, growth tracking, and photo logs per plant
+- **Mobile app**: Develop native iOS/Android app for on-the-go plant care reminders
+- **Social features**: Allow users to share favorite plants and care tips with other users
+- **Push notifications**: Send reminders for watering, fertilizing, and seasonal care tasks
+
+---
+
 ## Development Notes
 
 ### Database Migrations
