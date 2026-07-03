@@ -14,6 +14,75 @@ const router = express.Router();
 
 const PLANTBOOK_API_URL = "https://open.plantbook.io/api/v1";
 
+/**
+ * @swagger
+ * tags:
+ *   name: Plants
+ *   description: Search and retrieve plant information from PlantBook
+ */
+
+/**
+ * @swagger
+ * /plants/care/{pid}:
+ *   get:
+ *     summary: Get care details for a specific plant
+ *     tags: [Plants]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: PlantBook plant ID
+ *     responses:
+ *       200:
+ *         description: Care details for the plant
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 sunlight:
+ *                   type: string
+ *                   nullable: true
+ *                   description: Sunlight requirement description
+ *                 watering:
+ *                   type: string
+ *                   nullable: true
+ *                   description: Watering requirement description
+ *                 soil:
+ *                   type: string
+ *                   nullable: true
+ *                   description: Soil requirement description
+ *                 fertilization:
+ *                   type: string
+ *                   nullable: true
+ *                   description: Fertilization requirement description
+ *                 pruning:
+ *                   type: string
+ *                   nullable: true
+ *                   description: Pruning requirement description
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Plant not found in PlantBook API
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get(
   "/care/:pid",
   auth,
@@ -29,6 +98,42 @@ router.get(
   })
 );
 
+/**
+ * @swagger
+ * /plants/options:
+ *   get:
+ *     summary: Get all plants available as favorites options
+ *     tags: [Plants]
+ *     responses:
+ *       200:
+ *         description: List of all plants stored in the database
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   pid:
+ *                     type: string
+ *                     description: PlantBook plant ID
+ *                   alias:
+ *                     type: string
+ *                     nullable: true
+ *                     description: Common or custom name of the plant
+ *                   img_url:
+ *                     type: string
+ *                     nullable: true
+ *                     description: URL of the plant image
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get(
   "/options",
   asyncHandler(async (_req, res) => {
@@ -40,6 +145,70 @@ router.get(
   })
 );
 
+/**
+ * @swagger
+ * /plants/search:
+ *   get:
+ *     summary: Search for plants in the PlantBook API
+ *     tags: [Plants]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *           minLength: 3
+ *         description: Search query (minimum 3 characters). Returns empty results if shorter.
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 50
+ *           default: 20
+ *         description: Maximum number of results to return (clamped between 1 and 50)
+ *     responses:
+ *       200:
+ *         description: >
+ *           Search results from PlantBook. Returns `{ count: 0, results: [] }` when
+ *           `q` is fewer than 3 characters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ *                   description: Total number of results found
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       pid:
+ *                         type: string
+ *                         description: PlantBook plant ID
+ *                       alias:
+ *                         type: string
+ *                         description: Common name of the plant
+ *                       img_url:
+ *                         type: string
+ *                         nullable: true
+ *                         description: URL of the plant image
+ *       502:
+ *         description: PlantBook API search request failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get(
   "/search",
   asyncHandler(async (req, res) => {
