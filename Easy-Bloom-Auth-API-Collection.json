@@ -54,13 +54,8 @@
             },
             "url": {
               "raw": "{{base_url}}/auth/signup",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "auth",
-                "signup"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["auth", "signup"]
             }
           },
           "response": []
@@ -109,13 +104,8 @@
             },
             "url": {
               "raw": "{{base_url}}/auth/signup",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "auth",
-                "signup"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["auth", "signup"]
             }
           },
           "response": []
@@ -164,13 +154,8 @@
             },
             "url": {
               "raw": "{{base_url}}/auth/signup",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "auth",
-                "signup"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["auth", "signup"]
             }
           },
           "response": []
@@ -219,13 +204,8 @@
             },
             "url": {
               "raw": "{{base_url}}/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
             }
           },
           "response": []
@@ -279,13 +259,8 @@
             },
             "url": {
               "raw": "{{base_url}}/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
             }
           },
           "response": []
@@ -328,9 +303,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "exec": [
-                  ""
-                ],
+                "exec": [""],
                 "type": "text/javascript",
                 "packages": {},
                 "requests": {}
@@ -351,13 +324,8 @@
             },
             "url": {
               "raw": "{{base_url}}/auth/signup",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "auth",
-                "signup"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["auth", "signup"]
             }
           },
           "response": []
@@ -427,13 +395,8 @@
             },
             "url": {
               "raw": "{{base_url}}/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
             }
           },
           "response": []
@@ -482,13 +445,418 @@
             ],
             "url": {
               "raw": "{{base_url}}/users/me",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "users",
-                "me"
+              "host": ["{{base_url}}"],
+              "path": ["users", "me"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Plants",
+      "item": [
+        {
+          "name": "1. GET /plants/options",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test(\"Each plant has required fields\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  if (jsonData.length > 0) {",
+                  "    var plant = jsonData[0];",
+                  "    pm.expect(plant).to.have.property('id');",
+                  "    pm.expect(plant).to.have.property('pid');",
+                  "    pm.expect(plant).to.have.property('alias');",
+                  "    pm.expect(plant).to.have.property('img_url');",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/plants/options",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "options"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. GET /plants/search - Valid Query",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has count and results\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('count');",
+                  "  pm.expect(jsonData).to.have.property('results');",
+                  "  pm.expect(jsonData.results).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test(\"Results filtered to query term\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.count).to.be.above(0);",
+                  "  pm.expect(jsonData.results.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Each result has pid and alias\", function () {",
+                  "  var results = pm.response.json().results;",
+                  "  if (results.length > 0) {",
+                  "    pm.expect(results[0]).to.have.property('pid');",
+                  "    pm.expect(results[0]).to.have.property('alias');",
+                  "  }",
+                  "});",
+                  "",
+                  "// Save first pid for use in care and favorites requests",
+                  "var results = pm.response.json().results;",
+                  "if (results && results.length > 0) {",
+                  "  pm.environment.set('plant_pid', results[0].pid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/plants/search?q=ficus&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "search"],
+              "query": [
+                { "key": "q", "value": "ficus" },
+                { "key": "limit", "value": "5" }
               ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. GET /plants/search - Short Query (returns empty)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200 even for short query\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Returns empty result set for query shorter than 3 chars\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.count).to.eql(0);",
+                  "  pm.expect(jsonData.results).to.eql([]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/plants/search?q=fi",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "search"],
+              "query": [{ "key": "q", "value": "fi" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. GET /plants/care/:pid (Protected)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains care fields\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('sunlight');",
+                  "  pm.expect(jsonData).to.have.property('watering');",
+                  "  pm.expect(jsonData).to.have.property('soil');",
+                  "  pm.expect(jsonData).to.have.property('fertilization');",
+                  "  pm.expect(jsonData).to.have.property('pruning');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/plants/care/{{plant_pid}}",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "care", "{{plant_pid}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. GET /plants/favorites (Protected)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test(\"Each favorite has required fields\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  if (jsonData.length > 0) {",
+                  "    var fav = jsonData[0];",
+                  "    pm.expect(fav).to.have.property('favorite_id');",
+                  "    pm.expect(fav).to.have.property('pid');",
+                  "    pm.expect(fav).to.have.property('alias');",
+                  "    pm.expect(fav).to.have.property('img_url');",
+                  "    pm.expect(fav).to.have.property('saved_at');",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/plants/favorites",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "favorites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. POST /plants/favorites (Protected)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201\", function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has message and favorite\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('message');",
+                  "  pm.expect(jsonData).to.have.property('favorite');",
+                  "});",
+                  "",
+                  "pm.test(\"Favorite has required fields\", function () {",
+                  "  var fav = pm.response.json().favorite;",
+                  "  pm.expect(fav).to.have.property('user_id');",
+                  "  pm.expect(fav).to.have.property('plant_id');",
+                  "  pm.expect(fav).to.have.property('saved_at');",
+                  "});",
+                  "",
+                  "// Save plant_id for the DELETE request",
+                  "var fav = pm.response.json().favorite;",
+                  "if (fav && fav.plant_id) {",
+                  "  pm.environment.set('favorite_plant_id', fav.plant_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pid\": \"{{plant_pid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/plants/favorites",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "favorites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. POST /plants/favorites - Already Favorited (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 for duplicate favorite\", function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message mentions already in favorites\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('error');",
+                  "  pm.expect(jsonData.error.toLowerCase()).to.include('already');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pid\": \"{{plant_pid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/plants/favorites",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "favorites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8. DELETE /plants/favorites/:id (Protected)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has success message\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('message');",
+                  "  pm.expect(jsonData.message.toLowerCase()).to.include('deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/plants/favorites/{{favorite_plant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "favorites", "{{favorite_plant_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. DELETE /plants/favorites/:id - Not Found (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 404 for non-existent favorite\", function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message mentions not found\", function () {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('error');",
+                  "  pm.expect(jsonData.error.toLowerCase()).to.include('not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/plants/favorites/99999",
+              "host": ["{{base_url}}"],
+              "path": ["plants", "favorites", "99999"]
             }
           },
           "response": []
