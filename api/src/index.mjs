@@ -4,7 +4,6 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import knex from "./database_client.js";
 import plantsRouter from "./routers/plants.js";
-import nestedRouter from "./routers/nested.js";
 import { authRouter } from "./routers/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
@@ -33,7 +32,6 @@ apiRouter.get("/", async (req, res) => {
 });
 
 // Here is an example of optionally setting up nested routes. Replace it or delete as needed.
-apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/plants", plantsRouter);
 apiRouter.use("/users", usersRouter);
