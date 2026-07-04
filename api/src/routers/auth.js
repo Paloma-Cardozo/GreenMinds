@@ -7,7 +7,6 @@ import { asyncHandler } from "../middleware/asyncHandler.js";
 
 const authRouter = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 /**
  * @swagger
  * /auth/signup:
@@ -42,11 +41,33 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Validation error, or email/username already in use
+ *         description: Validation error
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *         examples:
+ *           missingFields:
+ *             summary: Missing required fields
+ *             value: { error: "Username, email, and password are required" }
+ *           invalidFieldTypes:
+ *             summary: Invalid field types (must be strings)
+ *             value: { error: "Username, email, and password must be text" }
+ *           invalidEmail:
+ *             summary: Email format invalid
+ *             value: { error: "Email must be valid" }
+ *           shortPassword:
+ *             summary: Password too short
+ *             value: { error: "Password must be at least 8 characters" }
+ *           passwordWithSpaces:
+ *             summary: Password contains spaces
+ *             value: { error: "Password cannot contain spaces" }
+ *           emailAlreadyExists:
+ *             summary: Email already in use
+ *             value: { error: "Email already in use" }
+ *           usernameAlreadyExists:
+ *             summary: Username already in use
+ *             value: { error: "Username already in use" }
  */
 
 authRouter.post(
@@ -82,6 +103,10 @@ authRouter.post(
         .json({ error: "Password must be at least 8 characters" });
     }
 
+    if (password.includes(" ")) {
+      return res.status(400).json({ error: "Password cannot contain spaces" });
+    }
+
     const existingEmail = await db("users")
       .where({ email: normalizedEmail })
       .first();
@@ -111,7 +136,7 @@ authRouter.post(
     }
 
     res.status(201).json(user);
-  }),
+  })
 );
 
 /**
@@ -206,7 +231,7 @@ authRouter.post(
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "7d" }
     );
 
     res.json({
@@ -217,7 +242,7 @@ authRouter.post(
         email: user.email,
       },
     });
-  }),
+  })
 );
 
 export { authRouter };

@@ -4,7 +4,6 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import knex from "./database_client.js";
 import plantsRouter from "./routers/plants.js";
-import nestedRouter from "./routers/nested.js";
 import { authRouter } from "./routers/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
@@ -33,13 +32,17 @@ apiRouter.get("/", async (req, res) => {
 });
 
 // Here is an example of optionally setting up nested routes. Replace it or delete as needed.
-apiRouter.use("/nested", nestedRouter);
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/plants", plantsRouter);
 apiRouter.use("/users", usersRouter);
 app.use("/api", apiRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+knex
+  .raw("SELECT 1")
+  .then(() => console.log("Database connected"))
+  .catch((err) => console.error("Database connection failed:", err.message));
 
 app.listen(process.env.PORT || 3001, () => {
   const port = process.env.PORT || 3001;
