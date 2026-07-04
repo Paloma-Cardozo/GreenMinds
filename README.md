@@ -299,6 +299,8 @@ A few choices worth explaining, beyond just listing the tech stack:
 
 - **Centralized error handling middleware** — instead of each route formatting its own error responses, all unexpected errors flow through one `errorHandler.js`, so the response format stays consistent and internal error details (database error messages) never leak to the client.
 - **`asyncHandler` wrapper for all async routes** — Express 4 doesn't automatically catch errors from `async` routes, so one unhandled rejection could crash the entire server. Wrapping every route in a small reusable function fixes this once, following DRY, instead of relying on every route remembering its own `try/catch`.
+- **Service layer for PlantBook integration (`plantService.js`)** — Centralizes all PlantBook API interactions (token fetching, plant details, care enrichment) and database operations (find/create plants, manage favorites). Keeps routers clean and business logic reusable across endpoints. All functions are exported separately
+  for easy testing and composition.
 - **Rate limiting on login only, not signup** — login is the realistic target for brute-force password guessing; signup doesn't expose that same risk, so it was left unrestricted to avoid blocking legitimate new users.
 - **Email normalization (lowercase) at signup and login** — avoids users accidentally creating duplicate accounts, or failing to log in, due to inconsistent capitalization in their email address.
 - **PlantBook API on-demand (no local database)** — Instead of bulk-importing plant data at startup, the app queries PlantBook API on every search/care request. This reduces storage but adds dependency on external API availability.
