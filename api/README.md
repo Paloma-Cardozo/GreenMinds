@@ -2,9 +2,9 @@
 
 This package sets up a [Express](https://expressjs.com/) API server and a connection to a database (SQLite by default) using [Knex](https://knexjs.org/).
 
-For development you can run the command `npm run dev` which uses `nodemon` to watch files and restarts the server when a change happens. You can find the API at [http://localhost:3001/api](http://localhost:3001/api). 
+For development you can run the command `npm run dev` which uses `nodemon` to watch files and restarts the server when a change happens. You can find the API at [http://localhost:3001/api](http://localhost:3001/api).
 
-There is an example route set up at "/" which you can implement to quickly test the connection to the database.
+Once the server is running, you can verify the database connection by visiting http://localhost:3001/api. You should see the API documentation.
 
 There is no build step, so when deploying it is enough to just run `npm run start`.
 
@@ -12,24 +12,25 @@ There is no build step, so when deploying it is enough to just run `npm run star
 
 You can set environment variables in the `.env` file or in the Render.com environment variables section.
 
-When you start a fresh project, check out `.env-template` to get started. Create a file called `.env` and copy the contents of the template as a starting point (or just run `cp .env-template .env`). You should comment in/out the sections you need, and add any additional configuration as necessary.
+When you start a fresh project, check out `.env-template` to get started. Create a file called `.env` and copy the contents of the template as a starting point (or just run `cp .env-template .env`). You should comment in/out the sections you need, and add any additional configuration as necessary. API_URL is only needed when deploying to production (e.g., Render.com) and can be left commented out for local development.
 
 ## Database clients
 
 The package comes installed with an SQLite, MySQL, and PostgreSQL client. Here's a quick suggestion for use cases:
+
 1. SQLite for quick, simple file-based storage
 2. MySQL for more advanced data storage (requires you to run a database service)
 3. PostgreSQL, similar to MySQL and used on our recommended hosting platform Render.com
 
-You can decide which client to use by changing the `DB_CLIENT` environment variable. See `.env-template` for more info. 
+You can decide which client to use by changing the `DB_CLIENT` environment variable. See `.env-template` for more info.
 
 ## Advanced database management
 
-You can get far with a simple `.sql` file to manage your database but if you'd prefer to manage your database with Knex, you can use [Knex Migrations](https://knexjs.org/guide/migrations.html) to set up your schema (as well as rollback schema changes across versions).  
+You can get far with a simple `.sql` file to manage your database but if you'd prefer to manage your database with Knex, you can use [Knex Migrations](https://knexjs.org/guide/migrations.html) to set up your schema (as well as rollback schema changes across versions).
 
-You can also use [Knex Seeds](https://knexjs.org/guide/migrations.html#seed-files) to populate your database with data.  
+You can also use [Knex Seeds](https://knexjs.org/guide/migrations.html#seed-files) to populate your database with data.
 
-Combined, these two techniques make it very easy to experiment with changes to your database or recover your database if something happens to it.  
+Combined, these two techniques make it very easy to experiment with changes to your database or recover your database if something happens to it.
 
 It also makes it possible to share temporary schema changes with others during Pull Request testing.
 
@@ -97,11 +98,12 @@ npm run migrate:latest
 
 This executes every file inside `migrations/` that has not been applied yet, in order:
 
-| Migration file | What it creates |
-|---|---|
-| `20260615213603_create_users_table.js` | `users` table |
-| `20260615213951_create_favorite_plants_table.js` | `favorite_plants` table |
-| `20260615214002_create_user_favorite_plants_table.js` | `user_favorite_plants` table |
+| Migration file                                           | What it creates                                    |
+| -------------------------------------------------------- | -------------------------------------------------- |
+| `20260615213603_create_users_table.js`                   | `users` table                                      |
+| `20260615213951_create_favorite_plants_table.js`         | `favorite_plants` table                            |
+| `20260615214002_create_user_favorite_plants_table.js`    | `user_favorite_plants` table (initial)             |
+| `20260625155233_add_id_to_user_favorite_plants_table.js` | Refactor: adds auto-incrementing id as primary key |
 
 To undo the last batch of migrations (roll back), run:
 
@@ -144,8 +146,6 @@ SELECT * FROM favorite_plants;
 ---
 
 ## Deploying
-
-> Last tested: 2025-07-08
 
 ### Deploying a PostgreSQL database
 

@@ -46,7 +46,7 @@ Easy Bloom is a plant management platform where users can:
 - **Database:** PostgreSQL (with Knex.js migrations)
 - **Authentication:** JWT (JSON Web Tokens) with bcrypt password hashing
 - **API Documentation:** Swagger/OpenAPI
-- **Frontend:** (in progress: templates available)
+- **Frontend:** Complete
 
 ---
 
@@ -82,7 +82,7 @@ Easy Bloom is a plant management platform where users can:
      DB_CLIENT=pg
      DB_HOST=localhost
      DB_PORT=5432
-     DB_USER=postgres
+     DB_USER=greenminds_user
      DB_PASSWORD=your_password
      DB_DATABASE_NAME=greenminds
      DB_USE_SSL=false
@@ -90,7 +90,10 @@ Easy Bloom is a plant management platform where users can:
      JWT_SECRET=your_secret_key_here
      PLANTBOOK_CLIENT_ID=your_client_id
      PLANTBOOK_CLIENT_SECRET=your_client_secret
+     API_URL=http://localhost:3001/api
      ```
+
+   - When deploying to Render, set `API_URL` to your deployed API URL (`https://greenminds-api.onrender.com/api`)
 
 4. **Create the database:**
    - Using pgAdmin or your PostgreSQL client, create a database named `greenminds`
@@ -122,6 +125,56 @@ npm start
 ```
 
 The API will be available at `http://localhost:3001/api`
+
+### Running the Frontend
+
+The frontend is a static Vanilla JavaScript application (no build step required). You have several options to serve it locally:
+
+#### Option 1: Using Python (simplest, no installation needed)
+
+```bash
+cd app
+python -m http.server 8000
+```
+
+Then visit `http://localhost:8000` in your browser.
+
+#### Option 2: Using http-server (Node.js)
+
+```bash
+npm install -g http-server
+cd app
+http-server
+```
+
+Then visit `http://localhost:8080` in your browser.
+
+#### Option 3: Using VSCode Live Server (extension)
+
+- Install the "Live Server" extension in VSCode
+- Right-click on app/index.html
+- Select "Open with Live Server"
+
+#### Configuring the API URL for Local Development
+
+By default, the frontend connects to the deployed API at `https://greenminds-fe0k.onrender.com/api`. To use your local API server during development:
+
+- Open `app/script.js`
+- Uncomment line 10: `const API_BASE_URL = "http://localhost:3001/api";`
+- Comment line 12: `const API_BASE_URL = "https://greenminds-fe0k.onrender.com/api";`
+- Save and refresh your browser
+
+When you're ready to test against the deployed backend again, reverse these steps.
+
+#### Quick Verification
+
+Visit `http://localhost:8000` (or your chosen port) and:
+
+- See the landing page with hero section and about cards
+- Click "Search Plant" and search for a plant (e.g., "tomato")
+- Verify you can navigate to login, signup, and see the plant care preview
+
+---
 
 ### Authentication & Password Requirements
 
@@ -226,6 +279,11 @@ Use the "Authorize" button to test endpoints with your JWT token.
 | Deployed Frontend  | [https://easybloom.onrender.com/](https://easybloom.onrender.com/)                             |
 | Postman collection | [Easy-Bloom-Auth-API-Collection.json](./Easy-Bloom-Auth-API-Collection.json)                   |
 
+**For detailed deployment instructions:**
+
+- **API Backend:** see [api/README.md](./api/README.md#deploying) (database, server, environment variables)
+- **Frontend:** see [app/README.md](./app/README.md#deploying) (static site deployment to Render)
+
 ---
 
 ## Project Structure
@@ -253,7 +311,7 @@ GreenMinds/
 │   ├── seeds/                    # Demo data
 │   ├── .env-template             # Environment variable reference (copy to .env locally)
 │   └── package.json
-├── app/                          # Frontend (in progress)
+├── app/                          # Frontend (static HTML/CSS/JS, vanilla)
 ├── templates/                    # Frontend starter templates
 └── README.md
 ```
@@ -299,6 +357,8 @@ A few choices worth explaining, beyond just listing the tech stack:
 
 - **Centralized error handling middleware** — instead of each route formatting its own error responses, all unexpected errors flow through one `errorHandler.js`, so the response format stays consistent and internal error details (database error messages) never leak to the client.
 - **`asyncHandler` wrapper for all async routes** — Express 4 doesn't automatically catch errors from `async` routes, so one unhandled rejection could crash the entire server. Wrapping every route in a small reusable function fixes this once, following DRY, instead of relying on every route remembering its own `try/catch`.
+- **Service layer for PlantBook integration (`plantService.js`)** — Centralizes all PlantBook API interactions (token fetching, plant details, care enrichment) and database operations (find/create plants, manage favorites). Keeps routers clean and business logic reusable across endpoints. All functions are exported separately
+  for easy testing and composition.
 - **Rate limiting on login only, not signup** — login is the realistic target for brute-force password guessing; signup doesn't expose that same risk, so it was left unrestricted to avoid blocking legitimate new users.
 - **Email normalization (lowercase) at signup and login** — avoids users accidentally creating duplicate accounts, or failing to log in, due to inconsistent capitalization in their email address.
 - **PlantBook API on-demand (no local database)** — Instead of bulk-importing plant data at startup, the app queries PlantBook API on every search/care request. This reduces storage but adds dependency on external API availability.
@@ -317,11 +377,7 @@ A few choices worth explaining, beyond just listing the tech stack:
 - Email validation and normalization
 - Bearer token authentication on protected routes
 - User profile management (view, update, delete account)
-
-### 🔄 In Progress
-
-- Frontend implementation (choose template: Vanilla JS, React, or Next.js)
-- Additional plant features (watering schedule)
+- Frontend application (landing page, authentication, favorites, profile)
 
 ### Not Yet Implemented (Optional)
 
@@ -331,6 +387,7 @@ These were listed as optional ideas in the project requirements:
 - CI pipeline (GitHub Actions on each PR)
 - Pagination, sorting, and filtering on list endpoints
 - Role-based access control (admin vs regular user)
+- Additional plant features (watering schedule)
 
 ---
 
@@ -341,7 +398,6 @@ These were listed as optional ideas in the project requirements:
 - **No email verification**: Email addresses are accepted without verification at signup
 - **Single-user data access only**: Users can only view and manage their own resources; cannot access other users' data
 - **PlantBook API dependency**: App relies entirely on external PlantBook API; no local plant database fallback if API is unavailable
-- **Frontend still in template form**: Frontend UI is not yet fully integrated with backend; currently using starter templates
 
 ---
 
