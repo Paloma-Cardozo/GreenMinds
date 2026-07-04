@@ -41,11 +41,33 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Validation error, or email/username already in use
+ *         description: Validation error
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *         examples:
+ *           missingFields:
+ *             summary: Missing required fields
+ *             value: { error: "Username, email, and password are required" }
+ *           invalidFieldTypes:
+ *             summary: Invalid field types (must be strings)
+ *             value: { error: "Username, email, and password must be text" }
+ *           invalidEmail:
+ *             summary: Email format invalid
+ *             value: { error: "Email must be valid" }
+ *           shortPassword:
+ *             summary: Password too short
+ *             value: { error: "Password must be at least 8 characters" }
+ *           passwordWithSpaces:
+ *             summary: Password contains spaces
+ *             value: { error: "Password cannot contain spaces" }
+ *           emailAlreadyExists:
+ *             summary: Email already in use
+ *             value: { error: "Email already in use" }
+ *           usernameAlreadyExists:
+ *             summary: Username already in use
+ *             value: { error: "Username already in use" }
  */
 
 authRouter.post(
