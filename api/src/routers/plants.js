@@ -280,6 +280,21 @@ router.get(
  *                   img_url:
  *                     type: string
  *                     nullable: true
+ *                   sunlight:
+ *                     type: string
+ *                     nullable: true
+ *                   watering:
+ *                     type: string
+ *                     nullable: true
+ *                   soil:
+ *                     type: string
+ *                     nullable: true
+ *                   fertilization:
+ *                     type: string
+ *                     nullable: true
+ *                   pruning:
+ *                     type: string
+ *                     nullable: true
  *                   saved_at:
  *                     type: string
  *                     format: date-time
