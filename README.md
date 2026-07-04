@@ -82,7 +82,7 @@ Easy Bloom is a plant management platform where users can:
      DB_CLIENT=pg
      DB_HOST=localhost
      DB_PORT=5432
-     DB_USER=postgres
+     DB_USER=greenminds_user
      DB_PASSWORD=your_password
      DB_DATABASE_NAME=greenminds
      DB_USE_SSL=false
@@ -90,7 +90,10 @@ Easy Bloom is a plant management platform where users can:
      JWT_SECRET=your_secret_key_here
      PLANTBOOK_CLIENT_ID=your_client_id
      PLANTBOOK_CLIENT_SECRET=your_client_secret
+     API_URL=http://localhost:3001/api
      ```
+
+   - When deploying to Render, set `API_URL` to your deployed API URL (`https://greenminds-api.onrender.com/api`)
 
 4. **Create the database:**
    - Using pgAdmin or your PostgreSQL client, create a database named `greenminds`
@@ -225,6 +228,8 @@ Use the "Authorize" button to test endpoints with your JWT token.
 | Deployed API docs  | [https://greenminds-fe0k.onrender.com/api-docs](https://greenminds-fe0k.onrender.com/api-docs) |
 | Deployed Frontend  | [https://easybloom.onrender.com/](https://easybloom.onrender.com/)                             |
 | Postman collection | [Easy-Bloom-Auth-API-Collection.json](./Easy-Bloom-Auth-API-Collection.json)                   |
+
+**For detailed deployment instructions to Render (step-by-step setup, environment variables, database configuration), see [api/README.md](./api/README.md#deploying)**
 
 ---
 
