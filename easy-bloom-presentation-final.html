@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Bloom - Graduation Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #2c3e50;
+            --dark-bg-2: #34495e;
+            --green-primary: #27ae60;
+            --green-accent: #2ecc71;
+            --light-bg: #ecf0f1;
+            --text-dark: #2c3e50;
+            --text-light: #fff;
+            --border-green: #1abc9c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg-2) 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-dark);
+        }
+
+        .presentation-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            visibility: hidden;
+            width: 100vw;
+            height: 100vh;
+            padding: 45px 50px 100px 50px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide.active {
+            display: flex;
+            visibility: visible;
+            animation: fadeIn 0.6s ease-in;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+            margin-bottom: 20px;
+            animation: slideInUp 0.6s ease-out;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .slide-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--green-primary), var(--border-green));
+            border-radius: 2px;
+        }
+
+        .slide-subtitle {
+            font-size: 1.3rem;
+            color: var(--green-primary);
+            margin-bottom: 15px;
+            animation: slideInUp 0.6s ease-out 0.15s both;
+        }
+
+        .slide-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+            animation: slideInUp 0.6s ease-out 0.3s both;
+        }
+
+        .slide-dark {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg-2) 100%);
+            color: var(--text-light);
+        }
+
+        .slide-dark .slide-title {
+            color: var(--text-light);
+        }
+
+        .slide-dark .slide-subtitle {
+            color: var(--green-accent);
+        }
+
+        .slide-dark .slide-content {
+            color: #ecf0f1;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            align-items: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .grid-item {
+            animation: slideInUp 0.8s ease-out 0.3s both;
+        }
+
+        .grid-item:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .grid-item:nth-child(3) {
+            animation-delay: 0.7s;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--green-primary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--green-primary);
+            margin-bottom: 10px;
+        }
+
+        .card-content {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .card-dark {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--green-accent);
+            color: var(--text-light);
+        }
+
+        .card-dark .card-title {
+            color: var(--green-accent);
+        }
+
+        .card-dark .card-content {
+            color: #ecf0f1;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: slideInRight 0.6s ease-out both;
+        }
+
+        .feature-list li:nth-child(1) { animation-delay: 0.2s; }
+        .feature-list li:nth-child(2) { animation-delay: 0.35s; }
+        .feature-list li:nth-child(3) { animation-delay: 0.5s; }
+        .feature-list li:nth-child(4) { animation-delay: 0.65s; }
+        .feature-list li:nth-child(5) { animation-delay: 0.8s; }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--green-primary);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .team-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-top: 25px;
+        }
+
+        .team-member {
+            text-align: center;
+            animation: slideInUp 0.6s ease-out both;
+        }
+
+        .team-member:nth-child(1) { animation-delay: 0.2s; }
+        .team-member:nth-child(2) { animation-delay: 0.35s; }
+        .team-member:nth-child(3) { animation-delay: 0.5s; }
+        .team-member:nth-child(4) { animation-delay: 0.65s; }
+
+        .team-avatar {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green-primary), var(--border-green));
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .team-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+        }
+
+        .team-role {
+            font-size: 0.8rem;
+            color: var(--green-primary);
+        }
+
+        .nav-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 12px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        button {
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background: var(--green-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(39, 174, 96, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            color: var(--green-accent);
+            font-size: 0.95rem;
+            font-weight: 600;
+            min-width: 55px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--green-accent);
+            transition: width 0.3s ease;
+            z-index: 150;
+        }
+
+        .title-slide {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg-2) 100%);
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-slide::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(46, 204, 113, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .title-slide::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(26, 188, 156, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .title-content {
+            position: relative;
+            z-index: 10;
+            animation: slideInUp 1s ease-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(30px); }
+        }
+
+        .title-slide h1 {
+            font-size: 3.8rem;
+            color: var(--text-light);
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.4rem;
+            color: var(--green-accent);
+            margin-bottom: 25px;
+        }
+
+        .title-slide .team-names {
+            font-size: 0.95rem;
+            color: #bdc3c7;
+            line-height: 1.6;
+        }
+
+        .team-photos-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin: 30px 0;
+            animation: slideInUp 0.6s ease-out 0.2s both;
+        }
+
+        .team-photo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .photo-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--green-accent);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-img:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-name {
+            font-size: 0.85rem;
+            color: #bdc3c7;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .highlight {
+            color: var(--green-accent);
+            font-weight: 600;
+        }
+
+        .image-placeholder {
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--green-primary);
+            aspect-ratio: 16/9;
+            border: 2px solid var(--border-green);
+            min-height: 200px;
+        }
+
+        .image-label {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--green-primary);
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 35px 40px;
+            }
+
+            .slide-title {
+                font-size: 2.2rem;
+            }
+
+            .slide-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .team-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .team-photos-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .title-slide h1 {
+                font-size: 2.8rem;
+            }
+
+            .title-slide .subtitle {
+                font-size: 1.15rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 25px;
+            }
+
+            .slide-title {
+                font-size: 1.8rem;
+                margin-bottom: 12px;
+            }
+
+            .slide-content {
+                font-size: 0.9rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .card-content {
+                font-size: 0.85rem;
+            }
+
+            .team-container {
+                grid-template-columns: 1fr;
+            }
+
+            .team-photos-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .photo-img {
+                width: 85px;
+                height: 85px;
+            }
+
+            .photo-name {
+                font-size: 0.75rem;
+            }
+
+            .nav-container {
+                bottom: 12px;
+                gap: 8px;
+                padding: 8px 16px;
+            }
+
+            button {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+
+            .slide-counter {
+                font-size: 0.75rem;
+            }
+
+            .title-slide h1 {
+                font-size: 2.2rem;
+            }
+
+            .title-slide .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <div class="title-content">
+                <h1>Easy Bloom</h1>
+                <p class="subtitle">Intelligent Guide for Plant Care</p>
+
+                <div class="team-photos-container">
+                    <div class="team-photo">
+                        <img src="" alt="Juliana Yamaguchi" class="photo-img">
+                        <p class="photo-name">Juliana Yamaguchi</p>
+                    </div>
+                    <div class="team-photo">
+                        <img src="" alt="Paloma Cardozo" class="photo-img">
+                        <p class="photo-name">Paloma Cardozo</p>
+                    </div>
+                    <div class="team-photo">
+                        <img src="" alt="Hiwot Adane" class="photo-img">
+                        <p class="photo-name">Hiwot Adane</p>
+                    </div>
+                    <div class="team-photo">
+                        <img src="" alt="Shilpa Jumde" class="photo-img">
+                        <p class="photo-name">Shilpa Jumde</p>
+                    </div>
+                </div>
+
+                <p class="team-names" style="margin-top: 30px;">
+                    <strong>Hack Your Future - Final Project</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide">
+            <h2 class="slide-title">The Problem</h2>
+            <div class="grid-3">
+                <div class="card grid-item">
+                    <div class="card-title">Critical Failure</div>
+                    <div class="card-content">
+                        Constant difficulty keeping plants alive at home
+                    </div>
+                </div>
+                <div class="card grid-item">
+                    <div class="card-title">Data Deficiency</div>
+                    <div class="card-content">
+                        Inability to find and apply basic care rules
+                    </div>
+                </div>
+                <div class="card grid-item">
+                    <div class="card-title">Sustainability Loss</div>
+                    <div class="card-content">
+                        Biological waste from discarding dead plants
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: The Solution -->
+        <div class="slide slide-dark">
+            <h2 class="slide-title">Our Solution</h2>
+            <div class="grid-3">
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Product</div>
+                    <div class="card-content">
+                        Centralized platform with reliable botanical information
+                    </div>
+                </div>
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Action</div>
+                    <div class="card-content">
+                        Guided care with precise watering, light, and soil routines
+                    </div>
+                </div>
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Impact</div>
+                    <div class="card-content">
+                        Dramatic reduction of plant waste and successful growers
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Key Features -->
+        <div class="slide">
+            <h2 class="slide-title">Key Features</h2>
+            <div class="grid-2">
+                <div>
+                    <ul class="feature-list">
+                        <li>Botanical Database with 5000+ plants</li>
+                        <li>Advanced Search by name and difficulty</li>
+                        <li>Secure Authentication (JWT)</li>
+                        <li>Private Collections (Favorites)</li>
+                        <li>Care Guides with detailed requirements</li>
+                    </ul>
+                </div>
+                <div class="image-placeholder">
+                    📱
+                </div>
+            </div>
+            <div class="image-label">App Interface - Screenshot placeholder</div>
+        </div>
+
+        <!-- Slide 5: Tech Stack -->
+        <div class="slide slide-dark">
+            <h2 class="slide-title">System Architecture</h2>
+            <div class="grid-3">
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Client Layer</div>
+                    <div class="card-content">
+                        Vanilla JS, HTML, CSS<br>
+                        Responsive Design
+                    </div>
+                </div>
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Server Layer</div>
+                    <div class="card-content">
+                        Node.js + Express.js<br>
+                        RESTful API
+                    </div>
+                </div>
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Data Layer</div>
+                    <div class="card-content">
+                        PostgreSQL + Knex.js<br>
+                        Structured Migrations
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Security -->
+        <div class="slide">
+            <h2 class="slide-title">Security Architecture</h2>
+            <div class="slide-content">
+                <div style="margin-top: 30px;">
+                    <h3 style="color: var(--green-primary); font-size: 1.3rem; margin-bottom: 20px;">JWT Flow</h3>
+                    <ul class="feature-list">
+                        <li><span class="highlight">Registration:</span> Passwords hashed with bcrypt (10 rounds)</li>
+                        <li><span class="highlight">Authentication:</span> Email verification + rate limiting</li>
+                        <li><span class="highlight">Token Generation:</span> JSON Web Tokens for sessions</li>
+                        <li><span class="highlight">Protected Routes:</span> Bearer token validation for private data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Database Design -->
+        <div class="slide slide-dark">
+            <h2 class="slide-title">Data Model</h2>
+            <div class="grid-2">
+                <div class="image-placeholder">
+                    🗂️
+                </div>
+                <div>
+                    <div class="card card-dark">
+                        <div class="card-title">Relational Structure</div>
+                        <div class="card-content">
+                            <strong>Users Table:</strong> Authentication data<br>
+                            <strong>Plants Table:</strong> Botanical catalog<br>
+                            <strong>Favorites Table:</strong> User collections<br><br>
+                            Many-to-many relationship via junction table
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="image-label">Database schema visualization</div>
+        </div>
+
+        <!-- Slide 8: API Endpoints -->
+        <div class="slide">
+            <h2 class="slide-title">REST API Endpoints</h2>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                    <div class="card">
+                        <div class="card-title">Authentication</div>
+                        <div class="card-content">
+                            POST /auth/signup<br>
+                            POST /auth/login<br>
+                            <br>
+                            Rate limiting enabled
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Plants (Protected)</div>
+                        <div class="card-content">
+                            GET /plants/search<br>
+                            GET /plants/care/:pid<br>
+                            GET /plants/favorites
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Favorites (Protected)</div>
+                        <div class="card-content">
+                            POST /plants/favorites<br>
+                            DELETE /plants/favorites/:id<br>
+                            Verified collection
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Profile (Protected)</div>
+                        <div class="card-content">
+                            GET /users/me<br>
+                            PUT /users/me<br>
+                            PUT /users/me/password
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Deployment -->
+        <div class="slide slide-dark">
+            <h2 class="slide-title">Cloud Infrastructure</h2>
+            <div class="grid-2">
+                <div>
+                    <div class="card card-dark">
+                        <div class="card-title">Render.com</div>
+                        <div class="card-content">
+                            • API deployment (Node.js service)<br>
+                            • Frontend hosting<br>
+                            • Auto-rebuild on git push<br>
+                            • GitHub integration
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card card-dark">
+                        <div class="card-title">Database</div>
+                        <div class="card-content">
+                            • PostgreSQL (Frankfurt)<br>
+                            • SSL connections<br>
+                            • Managed backups<br>
+                            • Structured migrations
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Testing & Documentation -->
+        <div class="slide">
+            <h2 class="slide-title">Quality Assurance</h2>
+            <div class="grid-2">
+                <div>
+                    <div class="card">
+                        <div class="card-title">Postman Collection</div>
+                        <div class="card-content">
+                            ✓ 28 API requests<br>
+                            ✓ Happy path testing<br>
+                            ✓ Error case validation<br>
+                            ✓ Automated test scripts
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card">
+                        <div class="card-title">API Documentation</div>
+                        <div class="card-content">
+                            ✓ Swagger/OpenAPI spec<br>
+                            ✓ Interactive explorer<br>
+                            ✓ Request/response examples<br>
+                            ✓ Complete schema definitions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Team -->
+        <div class="slide slide-dark">
+            <h2 class="slide-title">Our Team</h2>
+            <div class="team-container">
+                <div class="team-member">
+                    <div class="team-avatar">JY</div>
+                    <div class="team-name">Juliana</div>
+                    <div class="team-role">Plants API</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">PC</div>
+                    <div class="team-name">Paloma</div>
+                    <div class="team-role">Auth & Users</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">HA</div>
+                    <div class="team-name">Hiwot</div>
+                    <div class="team-role">Frontend Core</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">SJ</div>
+                    <div class="team-name">Shilpa</div>
+                    <div class="team-role">Frontend UI</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Challenges -->
+        <div class="slide">
+            <h2 class="slide-title">Challenges & Solutions</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">🔴 Hardest Part</div>
+                    <div class="card-content">
+                        Coordinating team across multiple branches, managing authentication flow, and ensuring API security while maintaining clean code architecture
+                    </div>
+                </div>
+                <div class="card" style="border-left-color: #f39c12;">
+                    <div class="card-title" style="color: #f39c12;">⭐ Most Amazing</div>
+                    <div class="card-content">
+                        Seeing the complete system come together—from JWT tokens to protected routes, database migrations, and a working full-stack application deployed to production
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Future Roadmap -->
+        <div class="slide slide-dark">
+            <h2 class="slide-title">Future Vision</h2>
+            <div class="grid-3">
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Phase 2</div>
+                    <div class="card-content">
+                        Mobile app with push notifications for watering reminders
+                    </div>
+                </div>
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Phase 3</div>
+                    <div class="card-content">
+                        AI-powered plant health detection via photo analysis
+                    </div>
+                </div>
+                <div class="card card-dark grid-item">
+                    <div class="card-title">Phase 4</div>
+                    <div class="card-content">
+                        Community sharing and expert consultation features
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Takeaways -->
+        <div class="slide">
+            <h2 class="slide-title">Key Learnings</h2>
+            <div class="slide-content">
+                <ul class="feature-list">
+                    <li><span class="highlight">Full-Stack Development:</span> Building complete systems from database to deployment</li>
+                    <li><span class="highlight">Teamwork & Communication:</span> Daily standups, peer coding, and version control</li>
+                    <li><span class="highlight">Security First:</span> Authentication, password hashing, and protected routes</li>
+                    <li><span class="highlight">Adaptability:</span> Overcoming obstacles and refining solutions iteratively</li>
+                    <li><span class="highlight">Production Ready:</span> Testing, documentation, and real-world deployment</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 15: Thank You / QR Code -->
+        <div class="slide title-slide">
+            <div class="title-content">
+                <h1 style="font-size: 3.2rem; margin-bottom: 20px;">¡Gracias!</h1>
+                <div class="image-placeholder" style="width: 220px; height: 220px; margin: 0 auto;">
+                    📲
+                </div>
+                <div class="image-label">QR Code - Link to GitHub repo</div>
+                <p class="team-names" style="margin-top: 20px;">
+                    <strong>Visit Easy Bloom</strong><br>
+                    Questions?
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <button id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+        <span class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">15</span></span>
+        <button id="nextBtn" onclick="changeSlide(1)">Siguiente →</button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) {
+                currentSlide = totalSlides;
+                return;
+            }
+            if (n < 1) {
+                currentSlide = 1;
+                return;
+            }
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+
+            document.getElementById('currentSlide').textContent = currentSlide;
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // Update progress bar
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
