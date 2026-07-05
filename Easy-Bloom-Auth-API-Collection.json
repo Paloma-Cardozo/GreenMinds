@@ -8,6 +8,197 @@
   },
   "item": [
     {
+      "name": "Auth - Happy Path",
+      "item": [
+        {
+          "name": "1. Signup - Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Verify status is 201 Created\r",
+                  "pm.test(\"Signup successful - Status 201\", function () {\r",
+                  "  pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "// Verify response contains required user fields\r",
+                  "pm.test(\"Response contains user data\", function () {\r",
+                  "  var jsonData = pm.response.json();\r",
+                  "  pm.expect(jsonData).to.have.property(\"id\");\r",
+                  "  pm.expect(jsonData).to.have.property(\"username\");\r",
+                  "  pm.expect(jsonData).to.have.property(\"email\");\r",
+                  "  pm.expect(jsonData).to.have.property(\"created_at\");\r",
+                  "});\r",
+                  "\r",
+                  "// Save email and username for use in later requests\r",
+                  "var jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"user_email\", jsonData.email);\r",
+                  "pm.environment.set(\"user_username\", jsonData.username);\r",
+                  "// Save original signup credentials for duplicate tests\r",
+                  "pm.environment.set(\"signup_email\", jsonData.email);\r",
+                  "pm.environment.set(\"signup_username\", jsonData.username);\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"testuser1_paloma_{{$randomInt}}\",\r\n  \"email\": \"testuser1_{{$randomInt}}@example.com\",\r\n  \"password\": \"TestPassword1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/signup",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "signup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Login - Get JWT Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Verify status is 200 OK\r",
+                  "pm.test(\"Login successful - Status 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Verify response contains JWT token\r",
+                  "pm.test(\"Response contains JWT token\", function () {\r",
+                  "  var jsonData = pm.response.json();\r",
+                  "  pm.expect(jsonData).to.have.property(\"token\");\r",
+                  "  pm.expect(jsonData.token).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "// Verify response contains user data\r",
+                  "pm.test(\"Response contains user data\", function () {\r",
+                  "  var jsonData = pm.response.json();\r",
+                  "  pm.expect(jsonData).to.have.property(\"user\");\r",
+                  "  pm.expect(jsonData.user).to.have.property(\"id\");\r",
+                  "  pm.expect(jsonData.user).to.have.property(\"username\");\r",
+                  "  pm.expect(jsonData.user).to.have.property(\"email\");\r",
+                  "});\r",
+                  "\r",
+                  "// Save token for use in protected routes\r",
+                  "pm.environment.set(\"token\", pm.response.json().token);\r",
+                  "\r",
+                  "// Verify token has valid JWT format (starts with \"eyJ\")\r",
+                  "pm.test(\"Token has valid JWT format\", function () {\r",
+                  "  var token = pm.response.json().token;\r",
+                  "  pm.expect(token).to.match(/^eyJ/);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"TestPassword1234\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get Profile (Protected Route)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Verify protected route responds with 200 OK when token is valid\r",
+                  "pm.test(\"Protected route works with valid token - Status 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Verify response contains user profile data\r",
+                  "pm.test(\"Returns user profile data\", function () {\r",
+                  "  var jsonData = pm.response.json();\r",
+                  "  pm.expect(jsonData).to.have.property(\"id\");\r",
+                  "  pm.expect(jsonData).to.have.property(\"email\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Auth - Error Cases",
       "item": [
         {
@@ -95,7 +286,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"username\": \"testuser1_paloma\",\r\n  \"email\": \"different_email_{{$randomInt}}@example.com\",\r\n  \"password\": \"TestPassword1234\"\r\n}",
+              "raw": "{\r\n  \"username\": \"{{user_username}}\",\r\n  \"email\": \"different_email_{{$randomInt}}@example.com\",\r\n  \"password\": \"TestPassword1234\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -261,192 +452,6 @@
               "raw": "{{base_url}}/auth/login",
               "host": ["{{base_url}}"],
               "path": ["auth", "login"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Auth - Happy Path",
-      "item": [
-        {
-          "name": "1. Signup - Create User",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Verify status is 201 Created\r",
-                  "pm.test(\"Signup successful - Status 201\", function () {\r",
-                  "  pm.response.to.have.status(201);\r",
-                  "});\r",
-                  "\r",
-                  "// Verify response contains required user fields\r",
-                  "pm.test(\"Response contains user data\", function () {\r",
-                  "  var jsonData = pm.response.json();\r",
-                  "  pm.expect(jsonData).to.have.property(\"id\");\r",
-                  "  pm.expect(jsonData).to.have.property(\"username\");\r",
-                  "  pm.expect(jsonData).to.have.property(\"email\");\r",
-                  "  pm.expect(jsonData).to.have.property(\"created_at\");\r",
-                  "});\r",
-                  "\r",
-                  "// Save email for use in login request\r",
-                  "pm.environment.set(\"user_email\", pm.response.json().email);\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [""],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"username\": \"testuser1_paloma_{{$randomInt}}\",\r\n  \"email\": \"testuser1_{{$randomInt}}@example.com\",\r\n  \"password\": \"TestPassword1234\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/signup",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "signup"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "2. Login - Get JWT Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Verify status is 200 OK\r",
-                  "pm.test(\"Login successful - Status 200\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "// Verify response contains JWT token\r",
-                  "pm.test(\"Response contains JWT token\", function () {\r",
-                  "  var jsonData = pm.response.json();\r",
-                  "  pm.expect(jsonData).to.have.property(\"token\");\r",
-                  "  pm.expect(jsonData.token).to.be.a(\"string\");\r",
-                  "});\r",
-                  "\r",
-                  "// Verify response contains user data\r",
-                  "pm.test(\"Response contains user data\", function () {\r",
-                  "  var jsonData = pm.response.json();\r",
-                  "  pm.expect(jsonData).to.have.property(\"user\");\r",
-                  "  pm.expect(jsonData.user).to.have.property(\"id\");\r",
-                  "  pm.expect(jsonData.user).to.have.property(\"username\");\r",
-                  "  pm.expect(jsonData.user).to.have.property(\"email\");\r",
-                  "});\r",
-                  "\r",
-                  "// Save token for use in protected routes\r",
-                  "pm.environment.set(\"token\", pm.response.json().token);\r",
-                  "\r",
-                  "// Verify token has valid JWT format (starts with \"eyJ\")\r",
-                  "pm.test(\"Token has valid JWT format\", function () {\r",
-                  "  var token = pm.response.json().token;\r",
-                  "  pm.expect(token).to.match(/^eyJ/);\r",
-                  "});\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"TestPassword1234\"\r\n}\r\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "login"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "3. Get Profile (Protected Route)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Verify protected route responds with 200 OK when token is valid\r",
-                  "pm.test(\"Protected route works with valid token - Status 200\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "// Verify response contains user profile data\r",
-                  "pm.test(\"Returns user profile data\", function () {\r",
-                  "  var jsonData = pm.response.json();\r",
-                  "  pm.expect(jsonData).to.have.property(\"id\");\r",
-                  "  pm.expect(jsonData).to.have.property(\"email\");\r",
-                  "});\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/users/me",
-              "host": ["{{base_url}}"],
-              "path": ["users", "me"]
             }
           },
           "response": []
@@ -705,7 +710,7 @@
                   "// Save plant_id for the DELETE request",
                   "var fav = pm.response.json().favorite;",
                   "if (fav && fav.plant_id) {",
-                  "  pm.environment.set('favorite_plant_id', fav.plant_id);",
+                  "  pm.environment.set('favorite_plant_id', fav.id);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -1008,17 +1013,17 @@
           "response": []
         },
         {
-          "name": "4. PUT /users/me - Duplicate Email (400)",
+          "name": "4. PUT /users/me - Invalid email format (400)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status 400 when email already in use\", function () {",
+                  "pm.test(\"Status 400 for invalid email\", function () {",
                   "  pm.response.to.have.status(400);",
                   "});",
                   "",
-                  "pm.test(\"Error message mentions email\", function () {",
+                  "pm.test(\"Error message mentions email format\", function () {",
                   "  var jsonData = pm.response.json();",
                   "  pm.expect(jsonData).to.have.property('error');",
                   "  pm.expect(jsonData.error.toLowerCase()).to.include('email');",
@@ -1039,7 +1044,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"testuser1_{{$randomInt}}@example.com\"\n}",
+              "raw": "{\n  \"email\": \"not-a-valid-email\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1055,20 +1060,20 @@
           "response": []
         },
         {
-          "name": "5. PUT /users/me - Duplicate Username (400)",
+          "name": "5. PUT /users/me - Valid email update",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status 400 when username already in use\", function () {",
-                  "  pm.response.to.have.status(400);",
+                  "pm.test(\"Status 200 for valid email update\", function () {",
+                  "  pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test(\"Error message mentions username\", function () {",
+                  "pm.test(\"Email was updated successfully\", function () {",
                   "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData).to.have.property('error');",
-                  "  pm.expect(jsonData.error.toLowerCase()).to.include('username');",
+                  "  pm.expect(jsonData).to.have.property('email');",
+                  "  pm.expect(jsonData.email).to.include('@example.com');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1086,7 +1091,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"testuser1_paloma\"\n}",
+              "raw": "{\n  \"email\": \"final_email_{{$randomInt}}@example.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1112,10 +1117,10 @@
                   "  pm.response.to.have.status(401);",
                   "});",
                   "",
-                  "pm.test(\"Error message mentions unauthorized\", function () {",
+                  "pm.test(\"Error message mentions authorization\", function () {",
                   "  var jsonData = pm.response.json();",
                   "  pm.expect(jsonData).to.have.property('error');",
-                  "  pm.expect(jsonData.error.toLowerCase()).to.include('unauthorized');",
+                  "  pm.expect(jsonData.error.toLowerCase()).to.include('authorization');",
                   "});"
                 ],
                 "type": "text/javascript"

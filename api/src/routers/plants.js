@@ -542,14 +542,14 @@ router.delete(
     const userId = req.user.id;
     const favoriteId = req.params.id;
     const fav = await connection("users_favorite_plants")
-      .where({ plant_id: favoriteId, user_id: userId })
+      .where({ id: favoriteId, user_id: userId })
       .first();
     if (!fav) {
       return res.status(404).json({ error: "Favorite not found" });
     }
 
     await connection("users_favorite_plants")
-      .where({ plant_id: favoriteId, user_id: userId })
+      .where({ id: favoriteId, user_id: userId })
       .del();
     res.json({ message: "Favorite deleted successfully" });
   })
