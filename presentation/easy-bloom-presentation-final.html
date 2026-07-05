@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Easy Bloom - Graduation Presentation</title>
+    <link rel="icon" type="image/png" href="../flower.png">
     <style>
         * {
             margin: 0;
@@ -339,16 +340,6 @@
             z-index: 150;
         }
 
-        .title-slide {
-            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg-2) 100%);
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0;
-            position: relative;
-            overflow: hidden;
-        }
 
         .title-slide::before {
             content: '';
@@ -623,43 +614,43 @@
 <body>
     <div class="presentation-container">
         <!-- Slide 1: Title -->
-        <div class="slide title-slide active">
-            <div class="title-content">
-                <h1 style="font-size: 3.5rem; margin: 0 0 10px 0; color: white; font-weight: 700;">Easy Bloom</h1>
-                <p style="font-size: 1.2rem; color: var(--green-accent); margin: 0 0 15px 0;">Intelligent Guide for Plant Care</p>
+        <div class="slide active">
+            <div style="text-align: center;">
+                <h1 style="font-size: 3rem; margin: 0 0 8px 0; color: white; font-weight: 700;">Easy Bloom</h1>
+                <p style="font-size: 1.1rem; color: var(--green-accent); margin: 0 0 20px 0;">Intelligent Guide for Plant Care</p>
 
                 <!-- Video -->
-                <div style="width: 400px; max-width: 90%; margin: 0 auto 15px;">
-                    <video controls width="100%">
+                <div style="width: 320px; max-width: 90%; margin: 0 auto 18px;">
+                    <video controls width="100%" style="display: block; border-radius: 8px;">
                         <source src="videos/team.08.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
 
-                <!-- Team Photos in Row -->
+                <!-- Team Photos -->
                 <div style="display: flex; justify-content: center; gap: 12px; margin: 15px 0;">
                     <div style="text-align: center;">
-                        <div style="width: 75px; height: 75px; border-radius: 50%; background: linear-gradient(135deg, #27ae60, #1abc9c); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; margin: 0 auto 5px;">JY</div>
-                        <p style="font-size: 0.75rem; color: #bdc3c7; margin: 0;">Juliana</p>
+                        <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #27ae60, #1abc9c); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; margin: 0 auto 4px;">JY</div>
+                        <p style="font-size: 0.7rem; color: #bdc3c7; margin: 0;">Juliana</p>
                     </div>
                     <div style="text-align: center;">
-                        <img src="images/paloma.jpeg" alt="Paloma" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--green-accent); margin: 0 auto 5px; display: block;">
-                        <p style="font-size: 0.75rem; color: #bdc3c7; margin: 0;">Paloma</p>
+                        <img src="images/paloma.jpeg" alt="Paloma" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--green-accent); margin: 0 auto 4px; display: block;">
+                        <p style="font-size: 0.7rem; color: #bdc3c7; margin: 0;">Paloma</p>
                     </div>
                     <div style="text-align: center;">
-                        <div style="width: 75px; height: 75px; border-radius: 50%; background: linear-gradient(135deg, #27ae60, #1abc9c); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; margin: 0 auto 5px;">HA</div>
-                        <p style="font-size: 0.75rem; color: #bdc3c7; margin: 0;">Hiwot</p>
+                        <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #27ae60, #1abc9c); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; margin: 0 auto 4px;">HA</div>
+                        <p style="font-size: 0.7rem; color: #bdc3c7; margin: 0;">Hiwot</p>
                     </div>
                     <div style="text-align: center;">
-                        <div style="width: 75px; height: 75px; border-radius: 50%; background: linear-gradient(135deg, #27ae60, #1abc9c); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; margin: 0 auto 5px;">SJ</div>
-                        <p style="font-size: 0.75rem; color: #bdc3c7; margin: 0;">Shilpa</p>
+                        <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #27ae60, #1abc9c); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; margin: 0 auto 4px;">SJ</div>
+                        <p style="font-size: 0.7rem; color: #bdc3c7; margin: 0;">Shilpa</p>
                     </div>
                 </div>
 
                 <!-- Quote -->
-                <p style="font-size: 1rem; color: #ecf0f1; font-style: italic; max-width: 600px; text-align: center; margin: 15px auto 0; line-height: 1.5;">
+                <p style="font-size: 0.9rem; color: #ecf0f1; font-style: italic; max-width: 600px; margin: 15px auto 0; line-height: 1.4;">
                     "What you do makes a difference, and you have to decide what kind of difference you want to make."
-                    <br><span style="font-size: 0.9rem;">— Jane Goodall</span>
+                    <br><span style="font-size: 0.8rem;">— Jane Goodall</span>
                 </p>
             </div>
         </div>
@@ -962,16 +953,14 @@
             </div>
         </div>
 
-        <!-- Slide 15: Thank You / QR Code -->
-        <div class="slide title-slide">
-            <div class="title-content">
-                <h1 style="font-size: 3.2rem; margin-bottom: 20px;">Thank You!</h1>
-                <img src="images/QR.png" alt="QR Code" style="width: 220px; height: 220px; margin: 0 auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
-                <div class="image-label">Scan to visit Easy Bloom</div>
-                <p class="team-names" style="margin-top: 20px;">
-                    <strong>Green Minds Team</strong><br>
-                    Hack Your Future
-                </p>
+        <!-- Slide 14: Thank You / QR Code -->
+        <div class="slide">
+            <div style="text-align: center;">
+                <h1 style="font-size: 2.6rem; margin: 0 0 18px 0; color: #2c3e50; font-weight: 700;">Thank You!</h1>
+                <img src="images/QR.png" alt="QR Code" style="width: 200px; height: 200px; margin: 0 auto 12px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="font-size: 0.95rem; color: var(--green-primary); margin: 0 0 12px 0; font-weight: 500;">Scan to visit Easy Bloom</p>
+                <p style="font-size: 1rem; font-weight: 700; color: #2c3e50; margin: 0 0 4px 0;">Green Minds Team</p>
+                <p style="font-size: 0.9rem; color: #34495e; margin: 0;">Hack Your Future</p>
             </div>
         </div>
     </div>
