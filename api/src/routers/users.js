@@ -186,6 +186,12 @@ usersRouter.put(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 usersRouter.delete(
   "/me",
@@ -226,13 +232,36 @@ usersRouter.delete(
  *                 type: string
  *               newPassword:
  *                 type: string
+ *                 description: Minimum 8 characters, no spaces allowed
  *     responses:
  *       200:
  *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password changed successfully
  *       400:
- *         description: Validation error
+ *         description: Validation error (missing fields, invalid length, contains spaces, or password mismatch)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized or current password incorrect
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 usersRouter.put(
   "/me/password",
@@ -257,6 +286,12 @@ usersRouter.put(
       return res
         .status(400)
         .json({ error: "New password must be at least 8 characters" });
+    }
+
+    if (newPassword.includes(" ")) {
+      return res
+        .status(400)
+        .json({ error: "New password cannot contain spaces" });
     }
 
     const user = await db("users")
