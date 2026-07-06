@@ -2479,7 +2479,160 @@
         </style>
       </div>
 
-      <!-- Slide 9: Tech Stack -->
+      <!-- Slide 9: Testing with Postman -->
+      <div class="slide">
+        <h2 class="slide-title">We Tested Everything</h2>
+
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+          <div class="testing-grid">
+            <!-- Content (Left) -->
+            <div class="testing-content">
+              <p class="testing-intro">
+                After writing all the code, we needed to check that everything worked correctly. We used a tool called <strong>Postman</strong> to test our API. Think of it like a quality inspector that clicks buttons and checks if the app responds the right way.
+              </p>
+
+              <h3 class="testing-title">
+                We tested 63 scenarios
+              </h3>
+              <p class="testing-text">
+                Every signup, login, search, favorite, and error case. We made sure passwords were protected, tokens worked, and hackers couldn't break in.
+              </p>
+              <p class="testing-note">
+                (We spent more hours testing than we wanted to admit, but it was worth it!)
+              </p>
+            </div>
+
+            <!-- Image (Right) -->
+            <div class="testing-image">
+              <img
+                src="images/postman.png"
+                alt="Postman Testing"
+                class="testing-img"
+              />
+            </div>
+          </div>
+        </div>
+
+        <style>
+          .testing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+            margin: 15px 0;
+          }
+
+          .testing-image {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+          }
+
+          .testing-img {
+            max-width: 85%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            object-fit: cover;
+          }
+
+          .testing-content {
+            color: #2c3e50;
+          }
+
+          .testing-intro {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+          }
+
+          .testing-title {
+            color: var(--green-primary);
+            font-size: 1.05rem;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+          }
+
+          .testing-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+          }
+
+          .testing-note {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 0;
+            font-style: italic;
+            color: #666;
+          }
+
+          @media (max-width: 1024px) {
+            .testing-grid {
+              grid-template-columns: 1fr;
+              gap: 20px;
+            }
+
+            .testing-title {
+              font-size: 0.98rem;
+            }
+
+            .testing-text {
+              font-size: 0.85rem;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .testing-grid {
+              grid-template-columns: 1fr;
+              gap: 15px;
+              margin: 15px 0;
+            }
+
+            .testing-title {
+              font-size: 0.92rem;
+              margin-bottom: 10px;
+            }
+
+            .testing-text {
+              font-size: 0.8rem;
+              margin-bottom: 8px;
+            }
+
+            .testing-note {
+              font-size: 0.78rem;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .testing-grid {
+              grid-template-columns: 1fr;
+              gap: 12px;
+              margin: 12px 0;
+            }
+
+            .testing-title {
+              font-size: 0.85rem;
+              margin-bottom: 8px;
+            }
+
+            .testing-text {
+              font-size: 0.75rem;
+              margin-bottom: 6px;
+              line-height: 1.5;
+            }
+
+            .testing-note {
+              font-size: 0.7rem;
+              line-height: 1.3;
+            }
+          }
+        </style>
+      </div>
+
+      <!-- Slide 10: Tech Stack -->
       <div class="slide slide-dark">
         <h2 class="slide-title">System Architecture</h2>
         <div class="grid-3">
