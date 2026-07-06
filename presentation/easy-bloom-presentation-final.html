@@ -2476,7 +2476,236 @@
         </style>
       </div>
 
-      <!-- Slide 9: Testing with Postman -->
+      <!-- Slide 9: How Easy Bloom Works Together (Endpoints) -->
+      <div class="slide">
+        <h2 class="slide-title">How Easy Bloom Works Together</h2>
+
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+          <p style="
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin: 0 0 30px 0;
+            line-height: 1.7;
+            text-align: center;
+          ">
+            Our app does three main things. Here is everything it can handle:
+          </p>
+
+          <div class="endpoints-grid">
+            <!-- Authentication -->
+            <div class="endpoint-card">
+              <div class="endpoint-title-container">
+                <img src="images/authentication.gif" alt="Authentication" class="endpoint-icon" />
+                <h3 class="endpoint-title">Authentication</h3>
+              </div>
+              <p class="endpoint-subtitle">Your Account</p>
+              <ul class="endpoint-list">
+                <li><strong>Sign up:</strong> Create a new account with email and password</li>
+                <li><strong>Log in:</strong> Enter your account safely</li>
+                <li><strong>Password protection:</strong> Your password is encrypted so only you can read it</li>
+                <li><strong>Security:</strong> If someone tries wrong password 5 times, the account locks for 15 minutes</li>
+              </ul>
+            </div>
+
+            <!-- Plants -->
+            <div class="endpoint-card">
+              <div class="endpoint-title-container">
+                <img src="images/webpage.gif" alt="Plants" class="endpoint-icon" />
+                <h3 class="endpoint-title">Plants</h3>
+              </div>
+              <p class="endpoint-subtitle">Search & Save</p>
+              <ul class="endpoint-list">
+                <li><strong>Search:</strong> Find any plant by name</li>
+                <li><strong>View care tips:</strong> Learn how to water, light, and care for it</li>
+                <li><strong>Save to favorites:</strong> Keep plants you love</li>
+                <li><strong>View my plants:</strong> See all the plants you saved</li>
+                <li><strong>Remove plant:</strong> Delete from your collection</li>
+              </ul>
+            </div>
+
+            <!-- User Profile -->
+            <div class="endpoint-card">
+              <div class="endpoint-title-container">
+                <img src="images/user-account.gif" alt="User Profile" class="endpoint-icon" />
+                <h3 class="endpoint-title">User Profile</h3>
+              </div>
+              <p class="endpoint-subtitle">Your Information</p>
+              <ul class="endpoint-list">
+                <li><strong>View my profile:</strong> See your username, email, and when you joined</li>
+                <li><strong>Update profile:</strong> Change your name or email</li>
+                <li><strong>Change password:</strong> Update your password anytime</li>
+                <li><strong>Delete account:</strong> Remove your account if you want</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <style>
+          .endpoints-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+          }
+
+          .endpoint-card {
+            background: rgba(39, 174, 96, 0.06);
+            border: 2px solid rgba(39, 174, 96, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+          }
+
+          .endpoint-title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+          }
+
+          .endpoint-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: rgba(39, 174, 96, 0.1);
+            padding: 4px;
+          }
+
+          .endpoint-title {
+            color: var(--green-primary);
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 700;
+          }
+
+          .endpoint-subtitle {
+            color: #666;
+            font-size: 0.85rem;
+            margin: 0 0 15px 0;
+            font-weight: 500;
+          }
+
+          .endpoint-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          .endpoint-list li {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            margin: 0 0 12px 0;
+            line-height: 1.5;
+          }
+
+          .endpoint-list li:last-child {
+            margin-bottom: 0;
+          }
+
+          @media (max-width: 1024px) {
+            .endpoints-grid {
+              grid-template-columns: 1fr 1fr;
+              gap: 15px;
+            }
+
+            .endpoint-card {
+              padding: 16px;
+            }
+
+            .endpoint-icon {
+              width: 28px;
+              height: 28px;
+            }
+
+            .endpoint-title {
+              font-size: 1rem;
+            }
+
+            .endpoint-list li {
+              font-size: 0.85rem;
+              margin-bottom: 10px;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .endpoints-grid {
+              grid-template-columns: 1fr;
+              gap: 12px;
+            }
+
+            .endpoint-card {
+              padding: 14px;
+            }
+
+            .endpoint-icon {
+              width: 26px;
+              height: 26px;
+            }
+
+            .endpoint-title {
+              font-size: 0.95rem;
+              margin-bottom: 0;
+            }
+
+            .endpoint-title-container {
+              gap: 8px;
+              margin-bottom: 3px;
+            }
+
+            .endpoint-subtitle {
+              font-size: 0.8rem;
+              margin-bottom: 12px;
+            }
+
+            .endpoint-list li {
+              font-size: 0.8rem;
+              margin-bottom: 8px;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .endpoints-grid {
+              grid-template-columns: 1fr;
+              gap: 10px;
+              margin: 15px 0;
+            }
+
+            .endpoint-card {
+              padding: 12px;
+              border-radius: 8px;
+            }
+
+            .endpoint-icon {
+              width: 24px;
+              height: 24px;
+            }
+
+            .endpoint-title-container {
+              gap: 6px;
+              margin-bottom: 2px;
+            }
+
+            .endpoint-title {
+              font-size: 0.9rem;
+              margin-bottom: 0;
+            }
+
+            .endpoint-subtitle {
+              font-size: 0.75rem;
+              margin-bottom: 10px;
+            }
+
+            .endpoint-list li {
+              font-size: 0.75rem;
+              margin-bottom: 6px;
+              line-height: 1.4;
+            }
+          }
+        </style>
+      </div>
+
+      <!-- Slide 10: Testing with Postman -->
       <div class="slide">
         <h2 class="slide-title">We Tested Everything</h2>
 
