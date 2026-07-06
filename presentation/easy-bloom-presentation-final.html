@@ -3374,8 +3374,8 @@
 
             // 1 second delay before scroll starts
             setTimeout(function() {
-              const maxScroll = container.scrollHeight - container.clientHeight;
-              const duration = 80000; // 80 seconds to scroll through everything
+              const maxScroll = container.scrollHeight - container.clientHeight - 200;
+              const duration = 50000; // 50 seconds - faster scroll
               const startTime = Date.now();
 
               function scroll() {
