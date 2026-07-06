@@ -1271,7 +1271,7 @@
           ">
             <!-- Screenshot 1 - Rotated -->
             <img
-              src="images/Captura de pantalla 2026-07-06 003147.png"
+              src="images/frontend1.png"
               alt="Easy Bloom Hero"
               style="
                 width: 500px;
@@ -1286,7 +1286,7 @@
 
             <!-- Screenshot 2 - Rotated opposite -->
             <img
-              src="images/Captura de pantalla 2026-07-06 003200.png"
+              src="images/frontend2.png"
               alt="Easy Bloom Features"
               style="
                 width: 500px;
@@ -1385,23 +1385,118 @@
         </div>
       </div>
 
-      <!-- Slide 4: Key Features -->
+      <!-- Slide 4: How We Built It - Step 1: Project Proposal -->
       <div class="slide">
-        <h2 class="slide-title">Key Features</h2>
-        <div class="grid-2">
-          <div>
-            <ul class="feature-list">
-              <li>Botanical Database with 5000+ plants</li>
-              <li>Advanced Search by name and difficulty</li>
-              <li>Secure Authentication (JWT)</li>
-              <li>Private Collections (Favorites)</li>
-              <li>Care Guides with detailed requirements</li>
-            </ul>
+        <h2 class="slide-title">How We Built It</h2>
+
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+          <p style="
+            font-size: 1.05rem;
+            color: #2c3e50;
+            margin: 0 0 30px 0;
+            line-height: 1.8;
+            text-align: center;
+          ">
+            To make Easy Bloom App possible, we first created a final project proposal.
+            Our mentors from Hack Your Future reviewed it carefully and approved our idea.
+            Here is our proposal and the moment it was officially approved.
+          </p>
+
+          <!-- Proposal Pages Grid (4 pages) -->
+          <div style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+          ">
+            <img
+              src="images/proposal1.png"
+              alt="Project Proposal Page 1"
+              style="
+                width: 100%;
+                border-radius: 8px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+                object-fit: cover;
+              "
+            />
+            <img
+              src="images/proposal2.png"
+              alt="Project Proposal Page 2"
+              style="
+                width: 100%;
+                border-radius: 8px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+                object-fit: cover;
+              "
+            />
+            <img
+              src="images/proposal3.png"
+              alt="Project Proposal Page 3"
+              style="
+                width: 100%;
+                border-radius: 8px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+                object-fit: cover;
+              "
+            />
+            <!-- Last page with Approval Stamp -->
+            <div style="
+              position: relative;
+            ">
+              <img
+                src="images/proposal4.png"
+                alt="Project Proposal Page 4"
+                style="
+                  width: 100%;
+                  border-radius: 8px;
+                  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+                  object-fit: cover;
+                "
+              />
+              <!-- Animated Approval Stamp Overlay -->
+              <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-15deg);
+                opacity: 0;
+                animation: stampAppear 0.6s ease-out 2s forwards;
+                z-index: 10;
+              ">
+                <div style="
+                  border: 4px solid #27ae60;
+                  color: #27ae60;
+                  padding: 16px 32px;
+                  font-size: 1.8rem;
+                  font-weight: 900;
+                  letter-spacing: 2px;
+                  text-transform: uppercase;
+                  border-radius: 6px;
+                  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+                  box-shadow: 0 0 0 2px #27ae60, 0 10px 30px rgba(39, 174, 96, 0.3);
+                  background: rgba(39, 174, 96, 0.08);
+                  white-space: nowrap;
+                ">
+                  APPROVED
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="image-placeholder">📱</div>
         </div>
-        <div class="image-label">App Interface - Screenshot placeholder</div>
       </div>
+
+      <style>
+        @keyframes stampAppear {
+          from {
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(-15deg) scale(0.3);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+          }
+        }
+      </style>
 
       <!-- Slide 5: Tech Stack -->
       <div class="slide slide-dark">
