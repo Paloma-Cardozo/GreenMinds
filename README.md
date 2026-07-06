@@ -4,7 +4,6 @@ A full-stack application built by Hiwot, Juliana, Paloma and Shilpa at **Hack Yo
 
 ## Table of Contents
 
-- [Team & Roles](#team--roles)
 - [Project Overview](#project-overview)
 - [Getting Started](#getting-started)
 - [API Endpoints](#api-endpoints)
@@ -17,19 +16,6 @@ A full-stack application built by Hiwot, Juliana, Paloma and Shilpa at **Hack Yo
 - [Development Notes](#development-notes)
 - [License](#license)
 - [Getting Help](#getting-help)
-
-## Team & Roles
-
-| Person  | Primary focus                                                               |
-| ------- | --------------------------------------------------------------------------- |
-| Paloma  | Authentication, security (rate limiting), error handling, API documentation |
-| Juliana | Database design & schema, frontend                                          |
-| Hiwot   | Plants & Favorites API, PlantBook integration                               |
-| Shilpa  | User profile API, frontend                                                  |
-
-Mentored by Unmesh.
-
----
 
 ## Project Overview
 
