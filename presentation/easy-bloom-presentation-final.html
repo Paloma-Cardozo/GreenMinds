@@ -1361,7 +1361,7 @@
 
       <!-- Slide 3: The Solution - Easy Bloom App -->
       <div class="slide">
-        <h2 class="slide-title">Meet Green Minds</h2>
+        <h2 class="slide-title">Easy Bloom: Our Solution</h2>
 
         <!-- Story and Team - Compact -->
         <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
@@ -2858,9 +2858,9 @@
         </style>
       </div>
 
-      <!-- Slide 10: API Documentation (Swagger) -->
+      <!-- Slide 11: API Documentation (Swagger) -->
       <div class="slide">
-        <h2 class="slide-title">How Others Use Our API</h2>
+        <h2 class="slide-title">The Skeleton Behind the Scenes</h2>
 
         <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
           <p style="
@@ -2981,7 +2981,170 @@
         </style>
       </div>
 
-      <!-- Slide 11: README Documentation -->
+      <!-- Slide 12: Frontend in Action -->
+      <div class="slide">
+        <h2 class="slide-title">What You See</h2>
+
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+          <p style="
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin: 0 0 25px 0;
+            line-height: 1.7;
+            text-align: center;
+          ">
+            Now see Easy Bloom from a user's perspective. Here is the complete journey: Find a plant, decide to save it, create your account, log in, and confirm your plant is saved to your collection.
+          </p>
+
+          <div class="frontend-video-container">
+            <video
+              class="frontend-video"
+              autoplay
+              loop
+              muted
+              onloadedmetadata="this.playbackRate = 1.5"
+            >
+              <source src="videos/signup.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <div class="frontend-flow" style="
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: 25px;
+            text-align: center;
+          ">
+            <div style="padding: 12px; background: rgba(39, 174, 96, 0.08); border-radius: 8px;">
+              <p style="font-size: 0.85rem; color: var(--green-primary); font-weight: 700; margin: 0 0 4px 0;">1</p>
+              <p style="font-size: 0.78rem; color: #2c3e50; margin: 0; line-height: 1.4;">Search Plant</p>
+            </div>
+            <div style="padding: 12px; background: rgba(39, 174, 96, 0.08); border-radius: 8px;">
+              <p style="font-size: 0.85rem; color: var(--green-primary); font-weight: 700; margin: 0 0 4px 0;">2</p>
+              <p style="font-size: 0.78rem; color: #2c3e50; margin: 0; line-height: 1.4;">Find Result</p>
+            </div>
+            <div style="padding: 12px; background: rgba(39, 174, 96, 0.08); border-radius: 8px;">
+              <p style="font-size: 0.85rem; color: var(--green-primary); font-weight: 700; margin: 0 0 4px 0;">3</p>
+              <p style="font-size: 0.78rem; color: #2c3e50; margin: 0; line-height: 1.4;">Sign Up</p>
+            </div>
+            <div style="padding: 12px; background: rgba(39, 174, 96, 0.08); border-radius: 8px;">
+              <p style="font-size: 0.85rem; color: var(--green-primary); font-weight: 700; margin: 0 0 4px 0;">4</p>
+              <p style="font-size: 0.78rem; color: #2c3e50; margin: 0; line-height: 1.4;">Log In</p>
+            </div>
+            <div style="padding: 12px; background: rgba(39, 174, 96, 0.08); border-radius: 8px;">
+              <p style="font-size: 0.85rem; color: var(--green-primary); font-weight: 700; margin: 0 0 4px 0;">5</p>
+              <p style="font-size: 0.78rem; color: #2c3e50; margin: 0; line-height: 1.4;">Save Plant</p>
+            </div>
+          </div>
+        </div>
+
+        <style>
+          .frontend-video-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            background: #f5f5f5;
+          }
+
+          .frontend-video {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-height: 600px;
+            object-fit: contain;
+          }
+
+          @media (max-width: 1024px) {
+            .frontend-video-container {
+              max-width: 420px;
+            }
+
+            .frontend-flow {
+              grid-template-columns: repeat(5, 1fr) !important;
+              gap: 10px !important;
+              margin-top: 20px !important;
+            }
+
+            .frontend-flow > div {
+              padding: 10px !important;
+              font-size: 0.75rem !important;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .frontend-video-container {
+              max-width: 360px;
+              border-radius: 12px;
+            }
+
+            .frontend-video {
+              max-height: 500px;
+            }
+
+            .frontend-flow {
+              grid-template-columns: repeat(5, 1fr) !important;
+              gap: 8px !important;
+              margin-top: 18px !important;
+            }
+
+            .frontend-flow > div {
+              padding: 8px !important;
+            }
+
+            .frontend-flow p {
+              font-size: 0.7rem !important;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .frontend-video-container {
+              max-width: 100%;
+              width: calc(100% - 32px);
+              margin: 0 auto;
+              border-radius: 10px;
+              padding: 0;
+            }
+
+            .frontend-video {
+              width: 100%;
+              height: auto;
+              max-height: 400px;
+              object-fit: contain;
+            }
+
+            .frontend-flow {
+              grid-template-columns: repeat(5, 1fr) !important;
+              gap: 6px !important;
+              margin-top: 15px !important;
+              padding: 0 16px;
+            }
+
+            .frontend-flow > div {
+              padding: 6px !important;
+              border-radius: 6px !important;
+              font-size: 0.65rem !important;
+            }
+
+            .frontend-flow p {
+              font-size: 0.65rem !important;
+              margin: 0 !important;
+            }
+
+            .frontend-flow p:first-child {
+              font-weight: 700;
+              margin-bottom: 2px !important;
+            }
+          }
+        </style>
+      </div>
+
+      <!-- Slide 12: README Documentation -->
       <div class="slide">
         <h2 class="slide-title">For the Curious Minds</h2>
 
