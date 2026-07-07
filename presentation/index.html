@@ -1,4 +1,4 @@
-﻿﻿!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -476,8 +476,8 @@
                   src="images/juliana.jpg"
                   alt="Juliana"
                   style="
-                    width: 65px;
-                    height: 65px;
+                    width: 85px;
+                    height: 85px;
                     border-radius: 50%;
                     object-fit: cover;
                     border: 3px solid var(--green-primary);
@@ -503,8 +503,8 @@
                   src="images/paloma.jpeg"
                   alt="Paloma"
                   style="
-                    width: 65px;
-                    height: 65px;
+                    width: 85px;
+                    height: 85px;
                     border-radius: 50%;
                     object-fit: cover;
                     border: 3px solid var(--green-primary);
@@ -529,7 +529,7 @@
             <!-- Video -->
             <div
               style="
-                width: 280px;
+                width: 360px;
                 flex-shrink: 0;
                 box-shadow: 0 6px 20px rgba(44, 62, 80, 0.15);
               "
@@ -561,8 +561,8 @@
                   src="images/Hiwot.jpg"
                   alt="Hiwot"
                   style="
-                    width: 75px;
-                    height: 75px;
+                    width: 85px;
+                    height: 85px;
                     border-radius: 50%;
                     border: 3px solid #27ae60;
                     object-fit: cover;
@@ -588,8 +588,8 @@
                   src="images/shilpa.JPG"
                   alt="Shilpa"
                   style="
-                    width: 75px;
-                    height: 75px;
+                    width: 85px;
+                    height: 85px;
                     border-radius: 50%;
                     border: 3px solid #27ae60;
                     object-fit: cover;
@@ -998,7 +998,7 @@
 
       <!-- Slide 3: The Solution - Easy Bloom App -->
       <div class="slide">
-        <h2 class="slide-title">Easy Bloom: Our Solution</h2>
+        <h2 class="slide-title">Our Solution</h2>
 
         <!-- Story and Team - Compact -->
         <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
@@ -1030,7 +1030,7 @@
               src="images/frontend1.png"
               alt="Easy Bloom Hero"
               style="
-                width: 380px;
+                width: 420px;
                 height: auto;
                 max-height: 300px;
                 border-radius: 16px;
@@ -1045,7 +1045,7 @@
               src="images/frontend2.png"
               alt="Easy Bloom Features"
               style="
-                width: 380px;
+                width: 420px;
                 height: auto;
                 max-height: 300px;
                 border-radius: 16px;
@@ -1142,7 +1142,6 @@
       </div>
 
       <!-- Slide 4: How We Built It - Step 1: Project Proposal -->
-      <!-- DUPLICATE - REMOVE LATER -->
       <div class="slide">
         <h2 class="slide-title">How We Built It</h2>
 
@@ -1264,9 +1263,9 @@
         <div style="
           position: relative;
           z-index: 8;
-          max-width: 900px;
+          max-width: 1050px;
           margin: 0 auto;
-          height: 400px;
+          height: 480px;
           background: white;
           border-radius: 14px;
           box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -1304,9 +1303,9 @@
               src="images/card.png"
               alt="Trello Card Example"
               style="
-                width: 420px;
+                width: 500px;
                 height: auto;
-                max-height: 320px;
+                max-height: 380px;
                 object-fit: contain;
                 background: white;
                 border-radius: 10px;
@@ -1353,7 +1352,7 @@
       <div class="slide" id="slide-api">
         <h2 class="slide-title">Our Data Source</h2>
 
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+        <div style="max-width: 1350px; margin: 0 auto; padding: 0 40px;">
           <p style="
             font-size: 1rem;
             color: #2c3e50;
@@ -1419,7 +1418,7 @@
           .api-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 60px;
             align-items: center;
             margin: 30px 0;
           }
@@ -1900,7 +1899,7 @@
 
       <!-- Slide 8: Security -->
       <div class="slide">
-        <h2 class="slide-title">While We Built It</h2>
+        <h2 class="slide-title">Protecting Your Data</h2>
 
         <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
           <p style="
@@ -2346,7 +2345,7 @@
       <div class="slide">
         <h2 class="slide-title">We Tested Everything</h2>
 
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+        <div style="max-width: 1350px; margin: 0 auto; padding: 0 40px;">
           <div class="testing-grid">
             <!-- Content (Left) -->
             <div class="testing-content">
@@ -2380,7 +2379,7 @@
           .testing-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 50px;
             align-items: center;
             margin: 15px 0;
           }
@@ -2392,7 +2391,7 @@
           }
 
           .testing-img {
-            max-width: 85%;
+            max-width: 100%;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
@@ -2552,22 +2551,56 @@
           </div>
 
           <script>
+            let globalBackdrop = null;
+            let currentOverlay = null;
+
+            const createBackdrop = () => {
+              if (globalBackdrop) return globalBackdrop;
+              globalBackdrop = document.createElement('div');
+              globalBackdrop.className = 'video-backdrop';
+              document.body.appendChild(globalBackdrop);
+              globalBackdrop.addEventListener('click', closeAllOverlays);
+              return globalBackdrop;
+            };
+
+            const closeAllOverlays = () => {
+              if (currentOverlay) {
+                currentOverlay.overlay.classList.remove('active');
+                currentOverlay.video.pause();
+                currentOverlay = null;
+              }
+              if (globalBackdrop) {
+                globalBackdrop.classList.remove('active');
+              }
+            };
+
             const authVideos = document.querySelectorAll('.auth-video');
-            let currentAuthIndex = 0;
+            authVideos.forEach(video => {
+              const container = video.closest('.swagger-video-container');
+              const videoSrc = video.querySelector('source').src;
 
-            function playAuthSequence() {
-              authVideos.forEach(video => video.pause());
-              authVideos[currentAuthIndex].play();
-            }
+              const overlay = document.createElement('div');
+              overlay.className = 'video-overlay';
+              const overlayVideo = document.createElement('video');
+              overlayVideo.muted = true;
+              overlayVideo.playbackRate = 1.5;
+              const source = document.createElement('source');
+              source.src = videoSrc;
+              source.type = 'video/mp4';
+              overlayVideo.appendChild(source);
+              overlay.appendChild(overlayVideo);
+              document.body.appendChild(overlay);
 
-            authVideos.forEach((video, index) => {
-              video.addEventListener('ended', function() {
-                currentAuthIndex = (index + 1) % authVideos.length;
-                playAuthSequence();
+              container.addEventListener('mouseenter', () => {
+                closeAllOverlays();
+                createBackdrop();
+                overlay.classList.add('active');
+                globalBackdrop.classList.add('active');
+                overlayVideo.currentTime = 0;
+                overlayVideo.play();
+                currentOverlay = { overlay, video: overlayVideo };
               });
             });
-
-            playAuthSequence();
           </script>
         </div>
 
@@ -2583,6 +2616,13 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+          }
+
+          .swagger-video-container:hover {
+            box-shadow: 0 12px 32px rgba(39, 174, 96, 0.25);
+            transform: translateY(-4px);
           }
 
           .swagger-video {
@@ -2590,6 +2630,55 @@
             height: auto;
             display: block;
             background: #f5f5f5;
+          }
+
+          .video-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 700px;
+            height: auto;
+            max-height: 80vh;
+            z-index: 2000;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            overflow: hidden;
+          }
+
+          .video-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1999;
+            display: none;
+          }
+
+          .video-backdrop.active {
+            display: block;
+          }
+
+          .video-overlay.active {
+            display: flex;
+          }
+
+          .video-overlay video {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 10px;
+            position: relative;
+            z-index: 2001;
           }
 
           .swagger-label {
@@ -2704,22 +2793,56 @@
           </div>
 
           <script>
+            let globalBackdrop2 = null;
+            let currentOverlay2 = null;
+
+            const createBackdrop2 = () => {
+              if (globalBackdrop2) return globalBackdrop2;
+              globalBackdrop2 = document.createElement('div');
+              globalBackdrop2.className = 'video-backdrop';
+              document.body.appendChild(globalBackdrop2);
+              globalBackdrop2.addEventListener('click', closeAllOverlays2);
+              return globalBackdrop2;
+            };
+
+            const closeAllOverlays2 = () => {
+              if (currentOverlay2) {
+                currentOverlay2.overlay.classList.remove('active');
+                currentOverlay2.video.pause();
+                currentOverlay2 = null;
+              }
+              if (globalBackdrop2) {
+                globalBackdrop2.classList.remove('active');
+              }
+            };
+
             const userVideos = document.querySelectorAll('.user-video');
-            let currentUserIndex = 0;
+            userVideos.forEach(video => {
+              const container = video.closest('.swagger-video-container');
+              const videoSrc = video.querySelector('source').src;
 
-            function playUserSequence() {
-              userVideos.forEach(video => video.pause());
-              userVideos[currentUserIndex].play();
-            }
+              const overlay = document.createElement('div');
+              overlay.className = 'video-overlay';
+              const overlayVideo = document.createElement('video');
+              overlayVideo.muted = true;
+              overlayVideo.playbackRate = 1.5;
+              const source = document.createElement('source');
+              source.src = videoSrc;
+              source.type = 'video/mp4';
+              overlayVideo.appendChild(source);
+              overlay.appendChild(overlayVideo);
+              document.body.appendChild(overlay);
 
-            userVideos.forEach((video, index) => {
-              video.addEventListener('ended', function() {
-                currentUserIndex = (index + 1) % userVideos.length;
-                playUserSequence();
+              container.addEventListener('mouseenter', () => {
+                closeAllOverlays2();
+                createBackdrop2();
+                overlay.classList.add('active');
+                globalBackdrop2.classList.add('active');
+                overlayVideo.currentTime = 0;
+                overlayVideo.play();
+                currentOverlay2 = { overlay, video: overlayVideo };
               });
             });
-
-            playUserSequence();
           </script>
         </div>
 
@@ -2735,6 +2858,13 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+          }
+
+          .swagger-video-container:hover {
+            box-shadow: 0 12px 32px rgba(39, 174, 96, 0.25);
+            transform: translateY(-4px);
           }
 
           .swagger-video {
@@ -2742,6 +2872,55 @@
             height: auto;
             display: block;
             background: #f5f5f5;
+          }
+
+          .video-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 700px;
+            height: auto;
+            max-height: 80vh;
+            z-index: 2000;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            overflow: hidden;
+          }
+
+          .video-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1999;
+            display: none;
+          }
+
+          .video-backdrop.active {
+            display: block;
+          }
+
+          .video-overlay.active {
+            display: flex;
+          }
+
+          .video-overlay video {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 10px;
+            position: relative;
+            z-index: 2001;
           }
 
           .swagger-label {
@@ -2832,7 +3011,7 @@
           .frontend-video-container {
             position: relative;
             width: 100%;
-            max-width: 800px;
+            max-width: 950px;
             height: auto;
             margin: 0 auto;
             border-radius: 16px;
@@ -2845,17 +3024,17 @@
             width: 100%;
             height: auto;
             display: block;
-            max-height: 700px;
+            max-height: 800px;
             object-fit: contain;
           }
 
           @media (max-width: 1024px) {
             .frontend-video-container {
-              max-width: 600px;
+              max-width: 700px;
             }
 
             .frontend-video {
-              max-height: 600px;
+              max-height: 700px;
             }
           }
 
@@ -2866,7 +3045,7 @@
             }
 
             .frontend-video {
-              max-height: 500px;
+              max-height: 600px;
             }
           }
 
@@ -2882,7 +3061,7 @@
             .frontend-video {
               width: 100%;
               height: auto;
-              max-height: 400px;
+              max-height: 450px;
               object-fit: contain;
             }
 
@@ -2916,7 +3095,7 @@
       <div class="slide">
         <h2 class="slide-title">Your Journey Inside</h2>
 
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+        <div style="max-width: 1350px; margin: 0 auto; padding: 0 40px;">
           <p style="
             font-size: 0.95rem;
             color: #2c3e50;
@@ -3020,6 +3199,7 @@
                 style="
                   width: 100%;
                   height: auto;
+                  max-height: 280px;
                   border-radius: 12px;
                   box-shadow: 0 8px 20px rgba(52, 152, 219, 0.15);
                   object-fit: contain;
@@ -3166,7 +3346,7 @@
 
           .readme-img {
             width: 100%;
-            height: 320px;
+            height: 380px;
             display: block;
             object-fit: contain;
             background: #f9f9f9;
@@ -3197,7 +3377,7 @@
             }
 
             .readme-img {
-              height: 300px;
+              height: 360px;
             }
 
             .readme-label {
@@ -3215,7 +3395,7 @@
             }
 
             .readme-img {
-              height: 280px;
+              height: 320px;
             }
 
             .readme-label {
@@ -3237,7 +3417,7 @@
             }
 
             .readme-img {
-              height: 240px;
+              height: 280px;
             }
 
             .readme-label {
@@ -3356,7 +3536,7 @@
               box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
               border-left: 5px solid #e74c3c;
             ">
-              <img src="images/target.gif" alt="The Challenge" style="width: 50px; height: 50px; margin: 0 auto 15px; display: block;" />
+              <img src="images/resilience.gif" alt="The Challenge" style="width: 50px; height: 50px; margin: 0 auto 15px; display: block;" />
               <h3 style="
                 font-size: 1.15rem;
                 color: #2c3e50;
@@ -3380,7 +3560,7 @@
               box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
               border-left: 5px solid #27ae60;
             ">
-              <img src="images/resilience.gif" alt="The Victory" style="width: 50px; height: 50px; margin: 0 auto 15px; display: block;" />
+              <img src="images/target.gif" alt="The Victory" style="width: 50px; height: 50px; margin: 0 auto 15px; display: block;" />
               <h3 style="
                 font-size: 1.15rem;
                 color: #2c3e50;
@@ -3464,23 +3644,35 @@
               <strong>Security first:</strong> Protecting people's information is a big responsibility and everyone has to think about it.
             </li>
 
-            <li style="
-              padding: 16px 0 16px 40px;
-              position: relative;
-              font-size: 0.95rem;
+          </ul>
+
+          <div style="
+            margin-top: 50px;
+            padding: 35px;
+            background: linear-gradient(135deg, #f0f7f4 0%, #e8f5e9 100%);
+            border-radius: 14px;
+            text-align: center;
+            border: 2px solid #27ae60;
+          ">
+            <p style="
+              font-size: 1.05rem;
+              color: #27ae60;
+              font-weight: 600;
+              margin: 0 0 12px 0;
+              line-height: 1.7;
+            ">
+              We built Easy Bloom to help you receive the right advice at the right moment, so your plants can be happier and healthier.
+            </p>
+            <p style="
+              font-size: 1.1rem;
               color: #2c3e50;
+              font-weight: 700;
+              margin: 0;
               line-height: 1.6;
             ">
-              <span style="
-                position: absolute;
-                left: 0;
-                color: #27ae60;
-                font-weight: bold;
-                font-size: 1.4rem;
-              ">→</span>
-              <strong>Now it's your turn:</strong> Visit Easy Bloom and become part of our plant community. Help your plants thrive and share your green journey with us!
-            </li>
-          </ul>
+              Ready to start? Visit Easy Bloom now!
+            </p>
+          </div>
         </div>
       </div>
 
@@ -3565,6 +3757,10 @@
                 <h3 class="credit-heading">Education & Mentorship</h3>
                 <ul class="credit-items">
                   <li>Hack Your Future</li>
+                  <li>Helena</li>
+                  <li>Anna</li>
+                  <li>Saloumeh</li>
+                  <li>Mentors</li>
                 </ul>
               </div>
 
@@ -3742,7 +3938,7 @@
             // 1 second delay before scroll starts
             setTimeout(function() {
               const maxScroll = container.scrollHeight - container.clientHeight - 200;
-              const duration = 40000; // 40 seconds - optimized speed
+              const duration = 30000; // 30 seconds - faster scroll
               const startTime = Date.now();
 
               function scroll() {
@@ -3759,7 +3955,7 @@
             }, 1000);
           }
 
-          // Start scroll when slide 14 is shown
+          // Start scroll when slide 19 is shown
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               const creditsSlide = document.getElementById('creditsSlide');
@@ -3843,7 +4039,3 @@
     </script>
   </body>
 </html>
-
-
-
-
